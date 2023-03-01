@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, TextInput, View, Button } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 
+//test of clone git on laptop 
 class App extends Component {
   constructor(props){
     super(props);
