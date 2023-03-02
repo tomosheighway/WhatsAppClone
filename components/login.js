@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Button } from 'react-native';
+
+import { StyleSheet, View, Text,TextInput, Button,TouchableOpacity } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 
 class Login extends Component {
@@ -58,10 +59,21 @@ class Login extends Component {
       <View>
         <TextInput placeholder='email...' onChangeText={this.handleEmailInput} value={this.state.email} />
         <TextInput placeholder='password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
-        <Button title="Login" onPress={this.handleLogin} />
-        <Button title="New user?" onPress={this.props.navigation.navigate("Signup")}  /> 
-        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
+        {/* <Button title="Login" onPress={this.handleLogin} /> */}
      
+        <TouchableOpacity
+		      style={styles.buttonContainer}
+            onPress={this.handleLogin}>
+			  <Text style={styles.buttonText}>Login</Text>
+		    </TouchableOpacity>
+
+        <TouchableOpacity
+		      style={styles.buttonContainer}
+            onPress={() => this.props.navigation.navigate('Signup')}>
+			  <Text style={styles.buttonText}>Go to signup</Text>
+		    </TouchableOpacity>
+
+        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
 {/*      
         <View>
             <Button title="New user?" onPress={this.props.navigation.navigate("Signup")}  /> 
@@ -75,5 +87,32 @@ class Login extends Component {
     );
   }
 }
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ebebeb'
+  },
+  text: {
+    color: '#101010',
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+  buttonContainer: {
+    backgroundColor: '#222',
+    borderRadius: 5,
+    padding: 10,
+    margin: 20
+  },
+  buttonText: {
+    fontSize: 20,
+    color: '#fff'
+  }
+});
+
 
 export default Login;
