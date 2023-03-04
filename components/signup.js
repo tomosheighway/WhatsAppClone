@@ -65,12 +65,12 @@ class Signup extends Component {
     const navigation = this.props.navigation;
     return (
       <View>
-        <TextInput placeholder='email...' onChangeText={this.handleEmailInput} value={this.state.email} />
-        <TextInput placeholder='password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
+        <TextInput placeholder='Email...' onChangeText={this.handleEmailInput} value={this.state.email} />
+        <TextInput placeholder='Password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
         <TextInput placeholder='First Name...' onChangeText={this.handleFirstNameInput} value={this.state.firstName} />
         <TextInput placeholder='Last Name...' onChangeText={this.handleLastNameInput} value={this.state.lastName} />
         
-        <TouchableOpacity           // just deals with valiadtion wont return user to login page yet
+        <TouchableOpacity           //just deals with valiadtion wont return user to login page yet
 		      style={styles.buttonContainer}
             onPress={this.handleSignup}>
 			  <Text style={styles.buttonText}>Continue</Text>

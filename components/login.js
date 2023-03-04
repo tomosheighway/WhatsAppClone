@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, View, Text,TextInput, Button,TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text,TextInput,TouchableOpacity } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
+// import Icon from 'react-native-vector-icons/MaterialIcons';   // icon pack 
+
+
 
 class Login extends Component {
     static navigationOptions = {
@@ -57,8 +60,9 @@ class Login extends Component {
     return (
 
       <View>
-        <TextInput placeholder='email...' onChangeText={this.handleEmailInput} value={this.state.email} />
-        <TextInput placeholder='password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
+        <TextInput placeholder='Email...' onChangeText={this.handleEmailInput} value={this.state.email}/>
+
+        <TextInput placeholder='Password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
         {/* <Button title="Login" onPress={this.handleLogin} /> */}
      
         <TouchableOpacity
@@ -97,6 +101,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ebebeb'
   },
+
+  textInputContainer: {
+    marginBottom: 20,
+    width: '80%',
+    borderBottomColor: '#222',
+    borderBottomWidth: 1,
+    alignItems: 'center',
+    flexDirection: 'row'
+    },
+    textInput: {
+    fontSize: 18,
+    marginLeft: 5,
+    flex: 1,
+    padding: 10,
+    color: '#222'
+    },
+    textInputIcon: {
+    marginLeft: 5,
+    marginRight: 5
+    },
+
   text: {
     color: '#101010',
     fontSize: 24,
