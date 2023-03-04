@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Button } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity,  StyleSheet  } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 
 class Signup extends Component {
@@ -36,7 +36,7 @@ class Signup extends Component {
   }
 
   handleSignup = () => {
-    // Validation login logic 
+    // Validation sing up logic             ## could add validation to prevent numbers in the name inputs 
     if (!this.state.email || !this.state.password) {
       this.setState({errorMessage: "Please fill in all of the fields"});
       return;
@@ -69,12 +69,44 @@ class Signup extends Component {
         <TextInput placeholder='password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
         <TextInput placeholder='First Name...' onChangeText={this.handleFirstNameInput} value={this.state.firstName} />
         <TextInput placeholder='Last Name...' onChangeText={this.handleLastNameInput} value={this.state.lastName} />
-        <Button title="SignUP" onPress={this.handleSignup} />
+        
+        <TouchableOpacity           // just deals with valiadtion wont return user to login page yet
+		      style={styles.buttonContainer}
+            onPress={this.handleSignup}>
+			  <Text style={styles.buttonText}>Continue</Text>
+		    </TouchableOpacity>
+
 
         {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ebebeb'
+  },
+  text: {
+    color: '#101010',
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+  buttonContainer: {
+    backgroundColor: '#222',
+    borderRadius: 5,
+    padding: 10,
+    margin: 20
+  },
+  buttonText: {
+    fontSize: 20,
+    color: '#fff'
+  }
+});
+
+
 
 export default Signup;
