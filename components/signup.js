@@ -67,13 +67,11 @@ class Signup extends Component {
       if(response.status === 201){
         return response.json()
         //this.setState({errorMessage: "Sign Up successful!"});
-        //navigate somewhere...
-        //this.props.navigation.navigate('Login');
       }
       else if (response.status === 400){
         throw 'Failed validation';
       }
-      else{
+      else{         // give nicer errors 
         throw 'Something went wrong';
       }
 
