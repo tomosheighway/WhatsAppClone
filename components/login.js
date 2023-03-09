@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { StyleSheet, View, Text,TextInput,TouchableOpacity } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import Icon from 'react-native-vector-icons/MaterialIcons';   // icon pack 
 
 
@@ -44,6 +45,39 @@ class Login extends Component {
       return;
     }
 
+
+    return fetch("http://localhost:3333/api/1.0.0/login", {
+      method: 'post',
+      headers: {
+        'Content-Type': "application/json"
+      }, 
+      body: JSON.stringify({
+        "email": this.state.email, "password": this.state.password
+      })
+    })
+    .then((response) => {
+      if(response.status === 200){
+        return response.json()
+        //this.setState({errorMessage: "Sign Up successful!"});
+      }
+      else if (response.status === 400){
+        throw 'Invalid user details';
+      }
+      else{         // give nicer errors 
+        throw 'Something went wrong';
+      }
+
+    })
+    .then(async (responseJson) =>{
+        console.log(responseJson);
+       // await AsyncStorage.setItem('@session_token', responseJson.token);
+        //this.props.navigation.navigate('');//  HOME
+    })
+    .catch((ERR) => {
+        console.log(ERR)
+    });
+
+
     //output msg 
     this.setState({errorMessage: "Login successful!"});     //success message for testing. 
   }
@@ -73,8 +107,8 @@ class Login extends Component {
 
         <TouchableOpacity
 		      style={styles.buttonContainer}
-            onPress={() => this.props.navigation.navigate('Signup')}>
-			  <Text style={styles.buttonText}>Go to signup</Text>
+          onPress={() => this.props.navigation.navigate('Signup')}>
+			    <Text style={styles.buttonText}>Go to signup</Text>
 		    </TouchableOpacity>
 
         {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
