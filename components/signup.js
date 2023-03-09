@@ -65,10 +65,10 @@ class Signup extends Component {
     })
     .then((response) => {
       if(response.status === 201){
-        //return response.json()
-        this.setState({errorMessage: "Sign Up successful!"});
+        return response.json()
+        //this.setState({errorMessage: "Sign Up successful!"});
         //navigate somewhere...
-        this.props.navigation.navigate('Login');
+        //this.props.navigation.navigate('Login');
       }
       else if (response.status === 400){
         throw 'Failed validation';
@@ -77,6 +77,10 @@ class Signup extends Component {
         throw 'Something went wrong';
       }
 
+    })
+    .then((responseJson) =>{
+        console.log("user created ID: " , responseJson);
+        this.props.navigation.navigate('Login');
     })
     .catch((ERR) => {
         console.log(ERR)
