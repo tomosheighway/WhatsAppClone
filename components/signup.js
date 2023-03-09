@@ -51,7 +51,37 @@ class Signup extends Component {
     }
 
     //output msg 
-    this.setState({errorMessage: "Sign Up successful!"});     //success message for testing. 
+   // this.setState({errorMessage: "Sign Up successful!"});     //success message for testing. 
+  
+    // is it 2.0.0 or not. currently getiing a 404 version. 
+    return fetch("http://localhost:3333/api/1.0.0/user", {
+      method: 'post',
+      headers: {
+        'Content-Type': "application/json"
+      }, 
+      body: JSON.stringify({
+        "first_name": this.state.firstName,"last_name": this.state.lastName, "email": this.state.email, "password": this.state.password
+      })
+    })
+    .then((response) => {
+      if(response.status === 201){
+        //return response.json()
+        this.setState({errorMessage: "Sign Up successful!"});
+        //navigate somewhere...
+        this.props.navigation.navigate('Login');
+      }
+      else if (response.status === 400){
+        throw 'Failed validation';
+      }
+      else{
+        throw 'Something went wrong';
+      }
+
+    })
+    .catch((ERR) => {
+        console.log(ERR)
+    });
+  
   }
 
   // Password strength check 
