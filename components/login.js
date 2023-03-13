@@ -68,10 +68,16 @@ class Login extends Component {
       }
 
     })
+     
     .then(async (responseJson) =>{
         console.log(responseJson);
-       // await AsyncStorage.setItem('@session_token', responseJson.token);
-        this.props.navigation.navigate('Home'); 
+        try{
+          await AsyncStorage.setItem('session_token', responseJson.token);
+          await AsyncStorage.setItem('user_id', responseJson.id);
+          this.props.navigation.navigate('Home'); 
+        }catch{
+          throw "Something wrong"
+        }
     })
     .catch((ERR) => {
         console.log(ERR)
