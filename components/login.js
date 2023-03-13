@@ -93,6 +93,22 @@ class Login extends Component {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/; //(including: one uppercase, one number and one special
     return passwordRegex.test(password);
   }
+
+  componentDidMount(){
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.checkLoggedIn();
+    })
+  }
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('session_token');
+    if (value != null) {
+        this.props.navigation.navigate('Home')
+    }
+  }
+
   
 // <Button title="New user?" onPress={this.props.navigate("Signup")}  /> 
   render() {
