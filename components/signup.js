@@ -69,7 +69,7 @@ class Signup extends Component {
         //this.setState({errorMessage: "Sign Up successful!"});
       }
       else if (response.status === 400){
-        throw 'Failed validation';
+        throw 'Failed validation. Email already exisits';
       }
       else{         // give nicer errors 
         throw 'Something went wrong';
@@ -82,6 +82,7 @@ class Signup extends Component {
     })
     .catch((ERR) => {
         console.log(ERR)
+        this.setState({"errorMessage":ERR})
     });
   
   }
