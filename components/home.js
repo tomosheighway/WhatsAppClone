@@ -38,13 +38,13 @@ class Home extends Component {
                 await AsyncStorage.removeItem("session_token")
                 await AsyncStorage.removeItem("user_id")
                 //this.props.navigation.navigate("Login")
-                //this.checkLoggedIn
+                this.checkLoggedIn()
             } else if (response.status === 401){
                 console.log("Unauthroised error")
                 await AsyncStorage.removeItem("session_token")
                 await AsyncStorage.removeItem("user_id")
                 //this.props.navigation.navigate("Login")
-                //this.checkLoggedIn
+                this.checkLoggedIn()
             } else {
                 throw "something went wrong "
             }
