@@ -1,24 +1,20 @@
 import React, { Component } from 'react';
-
 import { StyleSheet, View, Text,TextInput,TouchableOpacity } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import Icon from 'react-native-vector-icons/MaterialIcons';   // icon pack 
-
-
 
 class Login extends Component {
     static navigationOptions = {
         header: null
       };
 
-
   constructor(props){
     super(props);
     this.state = {
       email: "",
       password: "",
-      errorMessage: ""        // error state 4 outputting error message on login
+      errorMessage: ""    
     }
   }
 
@@ -45,7 +41,6 @@ class Login extends Component {
       return;
     }
 
-
     return fetch("http://localhost:3333/api/1.0.0/login", {
       method: 'post',
       headers: {
@@ -63,10 +58,9 @@ class Login extends Component {
       else if (response.status === 400){
         throw 'Invalid user details';
       }
-      else{         // give nicer errors 
+      else{         
         throw 'Something went wrong';
       }
-
     })
      
     .then(async (responseJson) =>{
@@ -83,12 +77,9 @@ class Login extends Component {
         console.log(ERR)
     });
 
-
-    //output msg 
-    this.setState({errorMessage: "Login successful!"});     //success message for testing. 
+    //this.setState({errorMessage: "Login successful!"});    
   }
 
-  // Password strength check 
   isStrongPassword = (password) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/; //(including: one uppercase, one number and one special
     return passwordRegex.test(password);
@@ -109,17 +100,12 @@ class Login extends Component {
     }
   }
 
-  
-// <Button title="New user?" onPress={this.props.navigate("Signup")}  /> 
   render() {
     
     return (
-
       <View>
         <TextInput placeholder='Email...' onChangeText={this.handleEmailInput} value={this.state.email}/>
-
         <TextInput placeholder='Password...' onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry={true} />
-        {/* <Button title="Login" onPress={this.handleLogin} /> */}
      
         <TouchableOpacity
 		      style={styles.buttonContainer}
@@ -133,17 +119,8 @@ class Login extends Component {
 			    <Text style={styles.buttonText}>Go to signup</Text>
 		    </TouchableOpacity>
 
-        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
-{/*      
-        <View>
-            <Button title="New user?" onPress={this.props.navigation.navigate("Signup")}  /> 
-        </View> */}
+        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null} 
       </View>
-
-      
-
-
-      
     );
   }
 }
