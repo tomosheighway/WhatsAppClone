@@ -37,20 +37,20 @@ class Home extends Component {
             if(response.status ===200){
                 await AsyncStorage.removeItem("session_token")
                 await AsyncStorage.removeItem("user_id")
-                //this.props.navigation.navigate('Login')
+                //this.props.navigation.navigate("Login")
                 //this.checkLoggedIn
             } else if (response.status === 401){
-                console.log("Unauthroised")
+                console.log("Unauthroised error")
                 await AsyncStorage.removeItem("session_token")
                 await AsyncStorage.removeItem("user_id")
-                //this.props.navigation.navigate('Login')
+                //this.props.navigation.navigate("Login")
                 //this.checkLoggedIn
             } else {
                 throw "something went wrong "
             }
         })
         .catch((error) =>{
-            console.log("catch error ", error)
+            console.log("catch error: ", error)
         })
       }
 
@@ -65,7 +65,11 @@ class Home extends Component {
             
             <TouchableOpacity
 		        style={styles.buttonContainer}
-                onPress={this.logout}>
+                
+                onPress={() => {
+                    this.logout();
+                    this.checkLoggedIn();
+                   }}>     
 			    <Text style={styles.buttonText}>Logout</Text>
 		    </TouchableOpacity>
 
