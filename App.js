@@ -7,8 +7,9 @@ import Login from './components/login';
 import Signup from './components/signup';
 import Home from './components/home';
 import Contacts from './components/contacts';
-import Settings from './components/settings';
+import Profile from './components/profile';
 import Chats from './components/chats';
+//import Profile from './components/profile';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,7 +21,7 @@ function HomeTabs() {
       <Tab.Screen name="Home" component={Home} />  
       <Tab.Screen name="Chats" component={Chats} />
       <Tab.Screen name="Contacts" component={Contacts} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }
