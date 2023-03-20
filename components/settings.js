@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text,TextInput,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class Home extends Component {
-    static navigationOptions = {
-        header: null,
-      };
 
-      //TODO:  create a new file for a stack naviation which i then direct to home page as the defult. from login then direct to the nav page. 
-    
+class Settings extends Component {
+    static navigationOptions = {
+        header: null
+      };
+   
       componentDidMount(){
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
             this.checkLoggedIn();
@@ -76,8 +75,6 @@ class Home extends Component {
         );
     }
 
-
-
 }
 
 
@@ -127,4 +124,5 @@ const styles = StyleSheet.create({
       color: '#fff'
     }
   });
-export default Home
+
+export default Settings 
