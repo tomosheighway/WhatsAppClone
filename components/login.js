@@ -68,7 +68,7 @@ class Login extends Component {
         try{
           await AsyncStorage.setItem('session_token', responseJson.token);
           await AsyncStorage.setItem('user_id', responseJson.id);
-          this.props.navigation.navigate('Home'); 
+          this.props.navigation.navigate('MainAppNav'); 
         }catch{
           throw "Something wrong"
         }
@@ -96,7 +96,7 @@ class Login extends Component {
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('session_token');
     if (value != null) {
-        this.props.navigation.navigate('Home')
+        this.props.navigation.navigate('MainAppNav')
     }
   }
 
