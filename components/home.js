@@ -6,8 +6,6 @@ class Home extends Component {
     static navigationOptions = {
         header: null,
       };
-
-      //TODO:  create a new file for a stack naviation which i then direct to home page as the defult. from login then direct to the nav page. 
     
       componentDidMount(){
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -53,9 +51,6 @@ class Home extends Component {
         })
       }
 
-
-
-
     //test render just to return output
     render() {
         return (
@@ -76,12 +71,7 @@ class Home extends Component {
         );
     }
 
-
-
 }
-
-
-
 
 const styles = StyleSheet.create({
     container: {

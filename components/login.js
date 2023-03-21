@@ -26,8 +26,7 @@ class Login extends Component {
     this.setState({password: pass})
   }
 
-  handleLogin = () => {
-    // Validation login logic 
+  handleLogin = () => { 
     if (!this.state.email || !this.state.password) {
       this.setState({errorMessage: "Please fill in all of the fields"});
       return;
@@ -76,7 +75,6 @@ class Login extends Component {
     .catch((ERR) => {
         console.log(ERR)
     });
-
     //this.setState({errorMessage: "Login successful!"});    
   }
 
@@ -101,7 +99,6 @@ class Login extends Component {
   }
 
   render() {
-    
     return (
       <View>
         <TextInput placeholder='Email...' onChangeText={this.handleEmailInput} value={this.state.email}/>
@@ -124,8 +121,6 @@ class Login extends Component {
     );
   }
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -171,6 +166,5 @@ const styles = StyleSheet.create({
     color: '#fff'
   }
 });
-
 
 export default Login;
