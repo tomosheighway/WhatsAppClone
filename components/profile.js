@@ -98,7 +98,7 @@ class Profile extends Component {
       console.log('Password updated successfully');
     } else if (response.status === 401) {
       console.log('Unauthorized error');
-      // kick them out ?
+      this.props.navigation.navigate('Login');
     } else if (response.status === 403) {
       console.log('Forbidded');
     } else if (response.status === 404) {
