@@ -37,16 +37,20 @@ class Signup extends Component {
   };
 
   handleSignup = () => {
+    const {
+      email, password, firstName, lastName,
+    } = this.state;
+    const { navigation } = this.props;
     // Validation sign up logic ## could add validation to prevent numbers in the name inputs
-    if (!this.state.email || !this.state.password) {
+    if (!email || !password) {
       this.setState({ errorMessage: 'Please fill in all of the fields' });
       return;
     }
-    if (!EmailValidator.validate(this.state.email)) {
+    if (!EmailValidator.validate(email)) {
       this.setState({ errorMessage: 'Please enter a valid email address' });
       return;
     }
-    if (!this.isStrongPassword(this.state.password)) {
+    if (!this.isStrongPassword(password)) {
       this.setState({ errorMessage: "Please enter a strong password. \n(8 or more characters including at least one uppercase letter, one number, and one special character: !@#$%^&*()_+-=[]{};:'\"\\|,.<>/?)" });
       return;
     }
@@ -61,30 +65,31 @@ class Signup extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        first_name: this.state.firstName,
-        last_name: this.state.lastName,
-        email: this.state.email,
-        password: this.state.password,
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
       }),
     })
       .then((response) => {
         if (response.status === 201) {
-          return response.json();
+          console.log('user created ID: ', response.json());
+          navigation.navigate('Login');
         // this.setState({errorMessage: "Sign Up successful!"});
         }
         if (response.status === 400) {
-          throw new Error('Failed validation. Email already exisits');
-        } else { // give nicer errors
+          this.setState({ errorMessage: 'Email already exisits' });
+          console.log('email already exisits');
+          // navigation.navigate('Signup');
+          throw new Error('Email already exisits');
+        } else {
+          console.log('email already exisits');
           throw new Error('Something went wrong');
         }
       })
-      .then((responseJson) => {
-        console.log('user created ID: ', responseJson);
-        this.props.navigation.navigate('Login');
-      })
       .catch((ERR) => {
         console.log(ERR);
-        this.setState({ errorMessage: ERR });
+        this.setState({ errorMessage: ERR.message });
       });
   };
 
@@ -96,12 +101,15 @@ class Signup extends Component {
 
   render() {
     // const { navigation } = this.props;
+    const {
+      email, password, firstName, lastName, errorMessage,
+    } = this.state;
     return (
       <View>
-        <TextInput placeholder="Email..." onChangeText={this.handleEmailInput} value={this.state.email} />
-        <TextInput placeholder="Password..." onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry />
-        <TextInput placeholder="First Name..." onChangeText={this.handleFirstNameInput} value={this.state.firstName} />
-        <TextInput placeholder="Last Name..." onChangeText={this.handleLastNameInput} value={this.state.lastName} />
+        <TextInput placeholder="Email..." onChangeText={this.handleEmailInput} value={email} />
+        <TextInput placeholder="Password..." onChangeText={this.handlePasswordInput} value={password} secureTextEntry />
+        <TextInput placeholder="First Name..." onChangeText={this.handleFirstNameInput} value={firstName} />
+        <TextInput placeholder="Last Name..." onChangeText={this.handleLastNameInput} value={lastName} />
 
         <TouchableOpacity // just deals with valiadtion wont return user to login page yet
           style={styles.buttonContainer}
@@ -110,7 +118,7 @@ class Signup extends Component {
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
 
-        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
+        {errorMessage ? <Text>{errorMessage}</Text> : null}
       </View>
     );
   }

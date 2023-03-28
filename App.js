@@ -3,8 +3,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// eslint-disable-next-line import/no-unresolved, import/extensions, import/no-absolute-path
-import MainAppNav from '/mainAppNav';
+import MainAppNav from './mainAppNav';
 import Login from './components/login';
 import Signup from './components/signup';
 

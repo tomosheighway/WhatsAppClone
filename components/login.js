@@ -21,7 +21,8 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
       this.checkLoggedIn();
     });
   }
@@ -31,9 +32,10 @@ class Login extends Component {
   }
 
   checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('session_token');
+    const { navigation } = this.props;
+    const value = await AsyncStorage.getItem('sessionToken');
     if (value != null) {
-      this.props.navigation.navigate('MainAppNav');
+      navigation.navigate('MainAppNav');
     }
   };
 
@@ -51,26 +53,27 @@ class Login extends Component {
   };
 
   handleLogin = () => {
-    if (!this.state.email || !this.state.password) {
+    const { email, password } = this.state;
+    if (!email || !password) {
       this.setState({ errorMessage: 'Please fill in all of the fields' });
       return;
     }
-    if (!EmailValidator.validate(this.state.email)) {
+    if (!EmailValidator.validate(email)) {
       this.setState({ errorMessage: 'Please enter a valid email address' });
       return;
     }
-    if (!this.isStrongPassword(this.state.password)) {
+    if (!this.isStrongPassword(password)) {
       this.setState({ errorMessage: "Please enter a strong password. \n(8 or more characters including at least one uppercase letter, one number, and one special character: !@#$%^&*()_+-=[]{};:'\"\\|,.<>/?)" });
       return;
     }
-
     fetch('http://localhost:3333/api/1.0.0/login', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: this.state.email, password: this.state.password,
+        email,
+        password,
       }),
     })
       .then((response) => {
@@ -88,24 +91,28 @@ class Login extends Component {
       .then(async (responseJson) => {
         console.log(responseJson);
         try {
-          await AsyncStorage.setItem('session_token', responseJson.token);
-          await AsyncStorage.setItem('user_id', responseJson.id);
-          this.props.navigation.navigate('MainAppNav');
+          const { navigation } = this.props;
+          await AsyncStorage.setItem('sessionToken', responseJson.token);
+          await AsyncStorage.setItem('userId', responseJson.id);
+          navigation.navigate('MainAppNav');
         } catch {
           throw new Error('Something wrong');
         }
       })
       .catch((ERR) => {
-        console.log(ERR);
+        this.setState({ errorMessage: ERR.message });
       });
     // this.setState({errorMessage: "Login successful!"});
   };
 
   render() {
+    const { email, password, errorMessage } = this.state;
+    const { navigation } = this.props;
+
     return (
       <View>
-        <TextInput placeholder="Email..." onChangeText={this.handleEmailInput} value={this.state.email} />
-        <TextInput placeholder="Password..." onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry />
+        <TextInput placeholder="Email..." onChangeText={this.handleEmailInput} value={email} />
+        <TextInput placeholder="Password..." onChangeText={this.handlePasswordInput} value={password} secureTextEntry />
 
         <TouchableOpacity
           style={styles.buttonContainer}
@@ -116,12 +123,12 @@ class Login extends Component {
 
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('Signup')}
+          onPress={() => navigation.navigate('Signup')}
         >
           <Text style={styles.buttonText}>Go to signup</Text>
         </TouchableOpacity>
 
-        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
+        {errorMessage ? <Text>{errorMessage}</Text> : null}
       </View>
     );
   }

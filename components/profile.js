@@ -29,13 +29,13 @@ class Profile extends Component {
   }
 
   async getUserInfo() {
-    const session_token = await AsyncStorage.getItem('session_token');
-    const user_id = await AsyncStorage.getItem('user_id');
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    const userId = await AsyncStorage.getItem('userId');
 
-    return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
       method: 'GET',
       headers: {
-        'X-Authorization': session_token,
+        'X-Authorization': sessionToken,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -46,8 +46,9 @@ class Profile extends Component {
           return data;
         }
         if (response.status === 401) {
+          const { navigation } = this.props;
           console.log('Unauthorized error');
-          this.props.navigation.navigate('Login');
+          navigation.navigate('Login');
           return null;
         }
         if (response.status === 404) {
@@ -64,6 +65,20 @@ class Profile extends Component {
       });
   }
 
+  // incomplete
+  async getGrofilePhoto() {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    const userId = await AsyncStorage.getItem('userId');
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+      method: 'GET',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json', // need take image
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
   // password reset stuff -----------
   handlePasswordInput = (pass) => {
     this.setState({ password: pass });
@@ -75,20 +90,21 @@ class Profile extends Component {
   };
 
   handleNewPassword = async () => {
-    if (!this.isStrongPassword(this.state.password)) {
+    const { password } = this.state;
+    if (!this.isStrongPassword(password)) {
       this.setState({ errorMessage: "Please enter a strong password. \n(8 or more characters including at least one uppercase letter, one number, and one special character: !@#$%^&*()_+-=[]{};:'\"\\|,.<>/?)" });
       return;
     }
 
     this.setState({ errorMessage: 'Valid new password' });
 
-    const session_token = await AsyncStorage.getItem('session_token');
-    const user_id = await AsyncStorage.getItem('user_id');
-    const requestBody = { password: this.state.password };
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    const userId = await AsyncStorage.getItem('userId');
+    const requestBody = { password };
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
       method: 'PATCH',
       headers: {
-        'X-Authorization': session_token,
+        'X-Authorization': sessionToken,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
@@ -98,7 +114,8 @@ class Profile extends Component {
       console.log('Password updated successfully');
     } else if (response.status === 401) {
       console.log('Unauthorized error');
-      this.props.navigation.navigate('Login');
+      const { navigation } = this.props;
+      navigation.navigate('Login');
     } else if (response.status === 403) {
       console.log('Forbidded');
     } else if (response.status === 404) {
@@ -111,7 +128,7 @@ class Profile extends Component {
   };
 
   render() {
-    const { userInfo } = this.state;
+    const { userInfo, password, errorMessage } = this.state;
     return (
       <View>
         {userInfo && (
@@ -141,7 +158,7 @@ class Profile extends Component {
         )}
 
         <Text>To change your password enter a new one below: </Text>
-        <TextInput placeholder=" New Password..." onChangeText={this.handlePasswordInput} value={this.state.password} secureTextEntry />
+        <TextInput placeholder=" New Password..." onChangeText={this.handlePasswordInput} value={password} secureTextEntry />
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={this.handleNewPassword}
@@ -149,7 +166,7 @@ class Profile extends Component {
           <Text style={styles.buttonText}>Update password</Text>
         </TouchableOpacity>
 
-        {this.state.errorMessage ? <Text>{this.state.errorMessage}</Text> : null}
+        {errorMessage ? <Text>{errorMessage}</Text> : null}
       </View>
     );
   }

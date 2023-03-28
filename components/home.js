@@ -10,7 +10,8 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
       this.checkLoggedIn();
     });
   }
@@ -20,9 +21,10 @@ class Home extends Component {
   }
 
   checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('session_token');
+    const value = await AsyncStorage.getItem('sessionToken');
+    const { navigation } = this.props;
     if (value == null) {
-      this.props.navigation.navigate('Login');
+      navigation.navigate('Login');
     }
   };
 
@@ -31,19 +33,19 @@ class Home extends Component {
     return fetch('http://localhost:3333/api/1.0.0/logout', {
       method: 'POST',
       headers: {
-        'X-Authorization': await AsyncStorage.getItem('session_token'),
+        'X-Authorization': await AsyncStorage.getItem('sessionToken'),
       },
     })
       .then(async (response) => {
         if (response.status === 200) {
-          await AsyncStorage.removeItem('session_token');
-          await AsyncStorage.removeItem('user_id');
+          await AsyncStorage.removeItem('sessionToken');
+          await AsyncStorage.removeItem('userId');
           // this.props.navigation.navigate("Login")
           this.checkLoggedIn();
         } else if (response.status === 401) {
           console.log('Unauthroised error');
-          await AsyncStorage.removeItem('session_token');
-          await AsyncStorage.removeItem('user_id');
+          await AsyncStorage.removeItem('sessionToken');
+          await AsyncStorage.removeItem('userId');
           // this.props.navigation.navigate("Login")
           this.checkLoggedIn();
         } else {

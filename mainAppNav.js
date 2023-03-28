@@ -11,9 +11,10 @@ const Tab = createBottomTabNavigator();
 
 class MainAppNav extends Component {
   componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
       this.checkLoggedIn();
-      // console.log('testing'); // not getting triggered at this point
+      console.log('testing'); // not getting triggered at this point
     });
   }
 
@@ -22,10 +23,11 @@ class MainAppNav extends Component {
   }
 
   checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('session_token');
+    const { navigation } = this.props;
+    const value = await AsyncStorage.getItem('sessionToken');
     if (value == null) {
       // console.log('Detected user missing login details');
-      this.props.navigation.navigate('Login');
+      navigation.navigate('Login');
     }
   };
 
