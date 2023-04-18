@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Text, TextInput, TouchableOpacity,
+  StyleSheet, View, Text, TouchableOpacity,
+  Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -12,7 +13,6 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      password: '',
       errorMessage: '',
     };
   }
@@ -65,70 +65,75 @@ class Profile extends Component {
       });
   }
 
-  // incomplete
-  async getGrofilePhoto() {
+  // not working when trying to return
+  // async getUserProfilePhoto() {
+  //   const sessionToken = await AsyncStorage.getItem('sessionToken');
+  //   const userId = await AsyncStorage.getItem('userId');
+
+  //   return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'X-Authorization': sessionToken,
+  //       Accept: 'image/png',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  //     .then(async (response) => {
+  //       if (response.status === 200) {
+  //         const blob = await response.blob();
+  //         const photoUrl = URL.createObjectURL(blob);
+  //         return photoUrl;
+  //       }
+  //       if (response.status === 401) {
+  //         const { navigation } = this.props;
+  //         console.log('Unauthorized error');
+  //         navigation.navigate('Login');
+  //         return null;
+  //       }
+  //       if (response.status === 404) {
+  //         throw new Error('Not found ');
+  //       } else if (response.status === 500) {
+  //         throw new Error('Server Error');
+  //       } else {
+  //         throw new Error('Something went wrong');
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       return null;
+  //     });
+  // }
+
+  getProfileImage = async () => {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
-    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+    fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
       method: 'GET',
       headers: {
         'X-Authorization': sessionToken,
-        Accept: 'application/json', // need take image
-        'Content-Type': 'application/json',
+        Accept: 'image/png',
+        'Content-Type': 'image/png',
       },
-    });
-  }
-
-  // password reset stuff -----------
-  handlePasswordInput = (pass) => {
-    this.setState({ password: pass });
-  };
-
-  isStrongPassword = (password) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/; // (including: one uppercase, one number and one special
-    return passwordRegex.test(password);
-  };
-
-  handleNewPassword = async () => {
-    const { password } = this.state;
-    if (!this.isStrongPassword(password)) {
-      this.setState({ errorMessage: "Please enter a strong password. \n(8 or more characters including at least one uppercase letter, one number, and one special character: !@#$%^&*()_+-=[]{};:'\"\\|,.<>/?)" });
-      return;
-    }
-
-    this.setState({ errorMessage: 'Valid new password' });
-
-    const sessionToken = await AsyncStorage.getItem('sessionToken');
-    const userId = await AsyncStorage.getItem('userId');
-    const requestBody = { password };
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
-      method: 'PATCH',
-      headers: {
-        'X-Authorization': sessionToken,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-    if (response.status === 200) {
-      console.log('Password updated successfully');
-    } else if (response.status === 401) {
-      console.log('Unauthorized error');
-      const { navigation } = this.props;
-      navigation.navigate('Login');
-    } else if (response.status === 403) {
-      console.log('Forbidded');
-    } else if (response.status === 404) {
-      console.log('User not found error');
-    } else if (response.status === 500) {
-      console.log('Server Error');
-    } else {
-      console.log('Something went wrong');
-    }
+    })
+      .then((res) => res.blob())
+      .then((resBlob) => {
+        const data = URL.createObjectURL(resBlob);
+        this.setState({
+          photo: data,
+          // isLoading: false,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   render() {
-    const { userInfo, password, errorMessage } = this.state;
+    const {
+      userInfo, errorMessage, photo,
+    } = this.state;
+    const { navigation } = this.props;
+
     return (
       <View>
         {userInfo && (
@@ -154,16 +159,23 @@ class Profile extends Component {
               {' '}
               {userInfo.email}
             </Text>
+
+            {/* NOT WORKING  */}
+            {photo && (
+            <Image
+              source={{
+                uri: photo,
+              }}
+            />
+            )}
           </>
         )}
 
-        <Text>To change your password enter a new one below: </Text>
-        <TextInput placeholder=" New Password..." onChangeText={this.handlePasswordInput} value={password} secureTextEntry />
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={this.handleNewPassword}
+          onPress={() => navigation.navigate('UpdateProfile', { data: userInfo })}
         >
-          <Text style={styles.buttonText}>Update password</Text>
+          <Text style={styles.buttonText}>Update User details</Text>
         </TouchableOpacity>
 
         {errorMessage ? <Text>{errorMessage}</Text> : null}

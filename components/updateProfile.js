@@ -35,7 +35,6 @@ class UpdateProfile extends Component {
     });
   }
 
-  // password reset stuff -----------
   handlePasswordInput = (pass) => {
     this.setState({ password: pass });
   };
@@ -141,37 +140,9 @@ class UpdateProfile extends Component {
       console.log('Something went wrong');
     }
   };
-  //   updateProfile() {
-  //     const {
-  //       firstName, lastName, email, password, errorMessage,
-  //     } = this.state;
 
-  //     const data = {};
-
-  //     if (firstName != this.state.originalData.first_name) {
-  //       data.first_name = firstName;
-  //       console.log('first name matching');
-  //     }
-  //     if (firstName != this.state.originalData.last_name) {
-  //       data.last_name = lastName;
-  //       console.log('first name matching');
-  //     }
-  //     if (this.state.email != this.state.originalData.email) {
-  //       data.email = this.state.email;
-  //       console.log('femaillll');
-  //     }
-  //     if (password != '') {
-  //       data.password = password;
-  //       console.log('first name matching');
-  //     }
-
-  //     console.log(data);
-  //   }
-
-  // test render just to return output
   render() {
     const {
-      // originalData,
       firstName,
       lastName,
       email,
