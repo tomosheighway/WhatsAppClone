@@ -4,8 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Home from './components/home';
 import Contacts from './components/contacts';
-import Profile from './components/profile';
+// import Profile from './components/profile';
 import Chats from './components/chats';
+import ProfileNav from './profileNav';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,7 +38,7 @@ class MainAppNav extends Component {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Chats" component={Chats} />
         <Tab.Screen name="Contacts" component={Contacts} />
-        <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen name="Profile" component={ProfileNav} />
       </Tab.Navigator>
     );
   }
