@@ -68,19 +68,36 @@ class Profile extends Component {
       });
   }
 
-  async getPhoto(userId, sessionToken) {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
-      headers: {
-        'X-Authorization': sessionToken,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error code ${response.status}`);
+  async getPhoto() {
+    try {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+        method: 'GET',
+        headers: {
+          'X-Authorization': sessionToken,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        const blob = await response.blob();
+        return window.URL.createObjectURL(blob);
+      }
+      if (response.status === 401) {
+        const { navigation } = this.props;
+        console.log('Unauthorized error');
+        navigation.navigate('Login');
+        return null;
+      }
+      if (response.status === 404) {
+        throw new Error('Not found');
+      }
+      throw new Error('Something went wrong');
+    } catch (error) {
+      console.error(error);
+      return null;
     }
-
-    const blob = await response.blob();
-    return window.URL.createObjectURL(blob);
   }
 
   render() {
