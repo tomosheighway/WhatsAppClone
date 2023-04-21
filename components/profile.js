@@ -17,17 +17,20 @@ class Profile extends Component {
     };
   }
 
-  // getting user details ------
   async componentDidMount() {
     const userInfo = await this.getUserInfo();
     if (userInfo) {
       console.log(userInfo);
-      this.setState({ userInfo });
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const userId = await AsyncStorage.getItem('userId');
+      const photo = await this.getPhoto(userId, sessionToken);
+      this.setState({ userInfo, photo });
     } else {
       this.setState({ errorMessage: 'Something went wrong' });
     }
   }
 
+  // getting user details ------
   async getUserInfo() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
@@ -65,68 +68,20 @@ class Profile extends Component {
       });
   }
 
-  // not working when trying to return
-  // async getUserProfilePhoto() {
-  //   const sessionToken = await AsyncStorage.getItem('sessionToken');
-  //   const userId = await AsyncStorage.getItem('userId');
-
-  //   return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'X-Authorization': sessionToken,
-  //       Accept: 'image/png',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then(async (response) => {
-  //       if (response.status === 200) {
-  //         const blob = await response.blob();
-  //         const photoUrl = URL.createObjectURL(blob);
-  //         return photoUrl;
-  //       }
-  //       if (response.status === 401) {
-  //         const { navigation } = this.props;
-  //         console.log('Unauthorized error');
-  //         navigation.navigate('Login');
-  //         return null;
-  //       }
-  //       if (response.status === 404) {
-  //         throw new Error('Not found ');
-  //       } else if (response.status === 500) {
-  //         throw new Error('Server Error');
-  //       } else {
-  //         throw new Error('Something went wrong');
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       return null;
-  //     });
-  // }
-
-  getProfileImage = async () => {
-    const sessionToken = await AsyncStorage.getItem('sessionToken');
-    const userId = await AsyncStorage.getItem('userId');
-    fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
-      method: 'GET',
+  async getPhoto(userId, sessionToken) {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
       headers: {
         'X-Authorization': sessionToken,
-        Accept: 'image/png',
-        'Content-Type': 'image/png',
       },
-    })
-      .then((res) => res.blob())
-      .then((resBlob) => {
-        const data = URL.createObjectURL(resBlob);
-        this.setState({
-          photo: data,
-          // isLoading: false,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error code ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    return window.URL.createObjectURL(blob);
+  }
 
   render() {
     const {
@@ -136,6 +91,7 @@ class Profile extends Component {
 
     return (
       <View>
+        <Image source={{ uri: photo }} style={{ width: 200, height: 200 }} />
         {userInfo && (
           <>
             <Text>Your user details are shown below:</Text>
@@ -159,18 +115,8 @@ class Profile extends Component {
               {' '}
               {userInfo.email}
             </Text>
-
-            {/* NOT WORKING  */}
-            {photo && (
-            <Image
-              source={{
-                uri: photo,
-              }}
-            />
-            )}
           </>
         )}
-
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={() => navigation.navigate('UpdateProfile', { data: userInfo })}
