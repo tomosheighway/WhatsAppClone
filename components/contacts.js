@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  View, Text, Button,
+  View, Text, Button, TouchableOpacity,
 } from 'react-native';
 
 class Contacts extends Component {
@@ -123,6 +123,8 @@ class Contacts extends Component {
           navigation.navigate('Login');
         } else if (response.status === 500) {
           throw new Error('Server Error');
+        } else if (response.status === 400) {
+          throw new Error('You cant block yourself');
         } else {
           throw new Error('Something went wrong');
         }
@@ -165,10 +167,50 @@ class Contacts extends Component {
       });
   }
 
+  async deleteContact(userId) {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/contact`, {
+      method: 'DELETE',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+          console.log('Contact deleted successfully');
+          const contacts = await this.getContacts();
+          const blockedContacts = await this.getBlockedContacts();
+          if (contacts && blockedContacts) {
+            this.setState({ contacts, blockedContacts });
+          }
+        } else if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   render() {
     const { contacts, blockedContacts } = this.state;
+    const { navigation } = this.props;
     return (
       <View>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddContact')}
+        >
+          <Text>Add a new contact</Text>
+        </TouchableOpacity>
         <Text> List of Users contacts</Text>
         {contacts.map((contact) => (
           <View key={contact.user_id}>
@@ -189,6 +231,10 @@ class Contacts extends Component {
             <Button
               title="Block Contact"
               onPress={() => this.blockContact(contact.user_id)}
+            />
+            <Button
+              title="Delete Contact"
+              onPress={() => this.deleteContact(contact.user_id)}
             />
           </View>
         ))}
@@ -215,6 +261,10 @@ class Contacts extends Component {
             <Button
               title="Un Block Contact"
               onPress={() => this.unblockContact(blockedContact.user_id)}
+            />
+            <Button
+              title="Delete Contact"
+              onPress={() => this.deleteContact(blockedContact.user_id)}
             />
           </View>
         ))}
