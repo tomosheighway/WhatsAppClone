@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput,
+  View, TextInput, Text,
 } from 'react-native';
+
+import styles from '../styles/chatStyles';
 
 class Chats extends Component {
   static navigationOptions = {
@@ -12,6 +14,7 @@ class Chats extends Component {
   render() {
     return (
       <View>
+        <Text style={styles.title}>Chats</Text>
         <TextInput placeholder="Test" />
 
       </View>

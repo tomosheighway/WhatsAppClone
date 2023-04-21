@@ -35,7 +35,7 @@ class MainAppNav extends Component {
     return (
       <Tab.Navigator initialRouteName="Home">
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Chats" component={ChatsNav} />
+        <Tab.Screen name="Chats" component={ChatsNav} options={{ headerShown: false }} />
         <Tab.Screen name="Contacts" component={ContactsNav} />
         <Tab.Screen name="Profile" component={ProfileNav} />
       </Tab.Navigator>
