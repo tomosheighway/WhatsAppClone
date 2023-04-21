@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  View, Text,
+  View, Text, Button,
 } from 'react-native';
 
 class Contacts extends Component {
@@ -26,7 +26,7 @@ class Contacts extends Component {
     if (blockedContacts) {
       this.setState({ blockedContacts });
     }
-    console.log(contacts); // output the returned data to the console for testing purposes
+    console.log(contacts);
   }
 
   async getContacts() {
@@ -99,6 +99,72 @@ class Contacts extends Component {
       });
   }
 
+  async blockContact(userId) {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/block`, {
+      method: 'POST',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+          console.log('Contact blocked successfully');
+          const contacts = await this.getContacts();
+          const blockedContacts = await this.getBlockedContacts();
+          if (contacts && blockedContacts) {
+            this.setState({ contacts, blockedContacts });
+          }
+        } else if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async unblockContact(userId) {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/block`, {
+      method: 'DELETE',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+          console.log('Contact unblocked successfully');
+          const contacts = await this.getContacts();
+          const blockedContacts = await this.getBlockedContacts();
+          if (contacts && blockedContacts) {
+            this.setState({ contacts, blockedContacts });
+          }
+        } else if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   render() {
     const { contacts, blockedContacts } = this.state;
     return (
@@ -120,6 +186,10 @@ class Contacts extends Component {
               {contact.email}
               {'\n'}
             </Text>
+            <Button
+              title="Block Contact"
+              onPress={() => this.blockContact(contact.user_id)}
+            />
           </View>
         ))}
 
@@ -142,6 +212,10 @@ class Contacts extends Component {
               {'Email: '}
               {blockedContact.email}
             </Text>
+            <Button
+              title="Un Block Contact"
+              onPress={() => this.unblockContact(blockedContact.user_id)}
+            />
           </View>
         ))}
       </View>
