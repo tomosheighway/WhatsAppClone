@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity,
+  View, Text, TextInput, FlatList, TouchableOpacity,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,7 @@ class Chats extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      newChatName: '',
       errorMessage: '',
     };
   }
@@ -62,6 +63,48 @@ class Chats extends Component {
       });
   }
 
+  createNewChat = async () => {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    const { newChatName } = this.state;
+    console.log(newChatName);
+    const body = {
+      name: newChatName,
+    };
+
+    fetch('http://localhost:3333/api/1.0.0/chat', {
+      method: 'POST',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+      .then(async (response) => {
+        if (response.status === 201) {
+          const data = await response.json();
+          console.log(data);
+          const chats = await this.getChats();
+          if (chats) {
+            this.setState({ chats });
+          }
+        } else if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+          return null;
+        } else if (response.status === 400) {
+          throw new Error('Invalid Request');
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ errorMessage: error.message });
+      });
+  };
+
   // test render just to return output
   render() {
     const { chats, errorMessage } = this.state;
@@ -87,6 +130,15 @@ class Chats extends Component {
           )}
           keyExtractor={(item) => item.chat_id.toString()}
         />
+        <TextInput
+          placeholder="Enter Message"
+          value={this.newChatName}
+          onChangeText={(text) => this.setState({ newChatName: text })}
+        />
+        <TouchableOpacity onPress={this.createNewChat}>
+          <Text>Create New Chat</Text>
+        </TouchableOpacity>
+
       </View>
     );
   }
