@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text } from 'react-native';
+import {
+  View, TextInput, Text, TouchableOpacity,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/chatStyles';
 
@@ -14,6 +16,7 @@ class ViewChats extends Component {
       chatId: null,
       errorMessage: '',
       chatName: '',
+      updatedChatName: '',
       members: [],
       messages: [],
     };
@@ -29,6 +32,49 @@ class ViewChats extends Component {
       await this.viewChat();
     });
   }
+
+  handleUpdateChatName = async () => {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+    const { chatId, updatedChatName } = this.state;
+    console.log(updatedChatName);
+    const body = {
+      name: updatedChatName,
+    };
+
+    return fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}`, {
+      method: 'PATCH',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+        //   const data = await response.json();
+          //   console.log(data);
+          this.setState({ errorMessage: 'Chat Name has been updated' });
+          this.setState({
+            chatName: updatedChatName,
+            updatedChatName: '',
+          });
+        }
+        if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+          return null;
+        }
+        if (response.status === 500) {
+          throw new Error('Server Error');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  };
 
   async viewChat() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
@@ -78,16 +124,24 @@ class ViewChats extends Component {
       chatName,
       members,
       messages,
+      updatedChatName,
     } = this.state;
     const messageList = messages.slice().reverse();
     return (
       <View>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
-        <Text style={styles.title}>Chats</Text>
-        <TextInput placeholder="Test" />
+        <Text style={styles.title}>Chat</Text>
+
+        <TextInput
+          placeholder={chatName}
+          value={updatedChatName}
+          onChangeText={(text) => this.setState({ updatedChatName: text })}
+        />
+        <TouchableOpacity onPress={this.handleUpdateChatName}>
+          <Text>Update Chat Name</Text>
+        </TouchableOpacity>
+
         <Text>
-          Chat Name:
-          {' '}
           {chatName}
         </Text>
         <Text>
