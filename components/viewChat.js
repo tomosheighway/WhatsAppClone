@@ -105,6 +105,37 @@ class ViewChats extends Component {
     }
   };
 
+  handleDeleteMessage = async (messageId) => {
+    try {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const { chatId } = this.state;
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/message/${messageId}`, {
+        method: 'DELETE',
+        headers: {
+          'X-Authorization': sessionToken,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        console.log('Message deleted');
+        await this.viewChat();
+      } else if (response.status === 401) {
+        const { navigation } = this.props;
+        console.log('Unauthorized error');
+        navigation.navigate('Login');
+      } else if (response.status === 403) {
+        this.setState({ errorMessage: 'You can only delete your own messages!' });
+        throw new Error('Forbidden');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(error);
+    }
+  };
+
   async viewChat() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     // const userId = await AsyncStorage.getItem('userId');
@@ -171,12 +202,8 @@ class ViewChats extends Component {
           <Text>Update Chat Name</Text>
         </TouchableOpacity>
 
-        <Text>
-          {chatName}
-        </Text>
-        <Text>
-          --------------------------Members----------------------------
-        </Text>
+        <Text>{chatName}</Text>
+        <Text>--------------------------Members----------------------------</Text>
         {members.map((member) => (
           <Text key={member.user_id}>
             {member.first_name}
@@ -188,36 +215,42 @@ class ViewChats extends Component {
             )
           </Text>
         ))}
-        <Text>
-          --------------------------Messages-------------------------------
-        </Text>
-        {messageList.map((message) => (
-          <View key={message.message_id}>
-            <Text>
-              Message ID:
-              {' '}
-              {message.message_id}
-            </Text>
-            <Text>{new Date(message.timestamp).toLocaleString()}</Text>
-            <Text>
-              Message:
-              {' '}
-              {message.message}
-            </Text>
-            <Text>
-              Author:
-              {' '}
-              {message.author.first_name}
-              {' '}
-              {message.author.last_name}
-              {' '}
-              {/* useful atm as lots users have same first / last name  */}
-              (
-              {message.author.email}
-              )
-            </Text>
-          </View>
-        ))}
+        <Text>--------------------------Messages-------------------------------</Text>
+        <ScrollView
+          contentContainerStyle={styles.messageContainer}
+          showsVerticalScrollIndicator
+                // need to make it defult scroll to the end
+        >
+          {messageList.map((message) => (
+            <View key={message.message_id}>
+              <Text>
+                Message ID:
+                {' '}
+                {message.message_id}
+              </Text>
+              <Text>{new Date(message.timestamp).toLocaleString()}</Text>
+              <Text>
+                Message:
+                {' '}
+                {message.message}
+              </Text>
+              <Text>
+                Author:
+                {' '}
+                {message.author.first_name}
+                {' '}
+                {message.author.last_name}
+                {' '}
+                (
+                {message.author.email}
+                )
+              </Text>
+              <TouchableOpacity onPress={() => this.handleDeleteMessage(message.message_id)}>
+                <Text>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
         <TextInput
           placeholder="Enter Message"
           value={newMessage}

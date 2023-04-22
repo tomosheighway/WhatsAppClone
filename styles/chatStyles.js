@@ -1,10 +1,13 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+
   title: {
-    alignSelf: 'center',
-    fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
+    fontSize: 20,
+  },
+  messageContainer: {
+    maxHeight: 500,
+    padding: 10,
   },
 });
