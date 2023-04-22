@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, Text, TouchableOpacity,
+  View, TextInput, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/chatStyles';
@@ -19,6 +19,7 @@ class ViewChats extends Component {
       updatedChatName: '',
       members: [],
       messages: [],
+      newMessage: '',
     };
   }
 
@@ -34,46 +35,74 @@ class ViewChats extends Component {
   }
 
   handleUpdateChatName = async () => {
-    const sessionToken = await AsyncStorage.getItem('sessionToken');
-    const { chatId, updatedChatName } = this.state;
-    console.log(updatedChatName);
-    const body = {
-      name: updatedChatName,
-    };
-
-    return fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}`, {
-      method: 'PATCH',
-      headers: {
-        'X-Authorization': sessionToken,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
-      .then(async (response) => {
-        if (response.status === 200) {
-        //   const data = await response.json();
-          //   console.log(data);
-          this.setState({ errorMessage: 'Chat Name has been updated' });
-          this.setState({
-            chatName: updatedChatName,
-            updatedChatName: '',
-          });
-        }
-        if (response.status === 401) {
-          const { navigation } = this.props;
-          console.log('Unauthorized error');
-          navigation.navigate('Login');
-          return null;
-        }
-        if (response.status === 500) {
-          throw new Error('Server Error');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        return null;
+    try {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const { chatId, updatedChatName } = this.state;
+      if (!updatedChatName || updatedChatName.trim() === '') {
+        this.setState({ errorMessage: 'Chat name cannot be blank' });
+        return;
+      }
+      const body = {
+        name: updatedChatName,
+      };
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}`, {
+        method: 'PATCH',
+        headers: {
+          'X-Authorization': sessionToken,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
       });
+      if (response.status === 200) {
+        this.setState({ errorMessage: 'Chat name has been updated' });
+        this.setState({
+          chatName: updatedChatName,
+          updatedChatName: '',
+        });
+      } else if (response.status === 401) {
+        const { navigation } = this.props;
+        console.log('Unauthorized error');
+        navigation.navigate('Login');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  handleNewMessage = async () => {
+    try {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const { chatId, newMessage } = this.state;
+      console.log(newMessage);
+      if (!newMessage || !newMessage.trim()) {
+        this.setState({ errorMessage: 'Please enter a message' });
+        return;
+      }
+      const body = {
+        message: newMessage,
+      };
+      await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/message`, {
+        method: 'POST',
+        headers: {
+          'X-Authorization': sessionToken,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      console.log('Message Sent');
+      await this.viewChat();
+      this.setState({
+        errorMessage: 'Message Sent',
+        newMessage: '',
+      });
+    } catch (error) {
+      console.error(error);
+      throw new Error(error);
+    }
   };
 
   async viewChat() {
@@ -124,6 +153,7 @@ class ViewChats extends Component {
       chatName,
       members,
       messages,
+      newMessage,
       updatedChatName,
     } = this.state;
     const messageList = messages.slice().reverse();
@@ -188,6 +218,14 @@ class ViewChats extends Component {
             </Text>
           </View>
         ))}
+        <TextInput
+          placeholder="Enter Message"
+          value={newMessage}
+          onChangeText={(text) => this.setState({ newMessage: text })}
+        />
+        <TouchableOpacity onPress={this.handleNewMessage}>
+          <Text>Send</Text>
+        </TouchableOpacity>
       </View>
     );
   }
