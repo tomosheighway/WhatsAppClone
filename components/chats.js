@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, Text, FlatList, TouchableOpacity,
+  View, Text, FlatList, TouchableOpacity,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from '../styles/chatStyles';
+// import styles from '../styles/chatStyles';
 
 class Chats extends Component {
   static navigationOptions = {
