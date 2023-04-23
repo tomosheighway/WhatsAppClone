@@ -67,6 +67,40 @@ class AddToChat extends Component {
       });
   }
 
+  handleAddUserToChat = async (userId) => {
+    try {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const { chatId } = this.state;
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
+        method: 'POST',
+        headers: {
+          'X-Authorization': sessionToken,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        console.log('User added to the chat ');
+        // await this.viewChat();
+      } else if (response.status === 400) {
+        console.log('Bad Request');
+        this.setState({ errorMessage: 'User already a member of the chat' });
+      } else if (response.status === 401) {
+        const { navigation } = this.props;
+        console.log('Unauthorized error');
+        navigation.navigate('Login');
+      } else if (response.status === 403) {
+        this.setState({ errorMessage: 'You can only delete your own messages!' });
+        throw new Error('Forbidden');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(error);
+    }
+  };
+
   render() {
     const {
       chatId,
@@ -100,6 +134,9 @@ class AddToChat extends Component {
               {contact.email}
               {'\n'}
             </Text>
+            <TouchableOpacity onPress={() => this.handleAddUserToChat(contact.user_id)}>
+              <Text>Add to Chat</Text>
+            </TouchableOpacity>
           </View>
         ))}
       </View>
