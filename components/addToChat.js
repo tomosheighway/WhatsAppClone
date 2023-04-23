@@ -118,6 +118,8 @@ class AddToChat extends Component {
           { chatId }
           {' '}
         </Text>
+
+        <Text> This is a list of your contacts. Select a user to add to the chat</Text>
         {contacts.map((contact) => (
           <View key={contact.user_id}>
             <Text>

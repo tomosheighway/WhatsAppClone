@@ -82,6 +82,10 @@ class Profile extends Component {
       });
       if (response.status === 200) {
         const blob = await response.blob();
+        // let data = URL.createObjectURL(blob);
+        // this.setState({
+        //   photo: data,
+        // })
         return window.URL.createObjectURL(blob);
       }
       if (response.status === 401) {
@@ -117,6 +121,7 @@ class Profile extends Component {
               {' '}
               {userInfo.user_id}
             </Text>
+
             <Text>
               First name:
               {' '}
@@ -146,7 +151,6 @@ class Profile extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
