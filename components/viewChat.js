@@ -224,6 +224,13 @@ class ViewChats extends Component {
         >
           <Text style={styles.buttonText}>Add a contact to the chat</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigation.navigate('RemoveFromChat', { chatId, members })}
+        >
+          <Text style={styles.buttonText}>Remove a user from the chat</Text>
+        </TouchableOpacity>
         <Text>--------------------------Messages-------------------------------</Text>
         <ScrollView
           contentContainerStyle={styles.messageContainer}
