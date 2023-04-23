@@ -186,8 +186,10 @@ class ViewChats extends Component {
       messages,
       newMessage,
       updatedChatName,
+      chatId,
     } = this.state;
     const messageList = messages.slice().reverse();
+    const { navigation } = this.props;
     return (
       <View>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
@@ -215,6 +217,13 @@ class ViewChats extends Component {
             )
           </Text>
         ))}
+
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigation.navigate('AddToChat', { data: chatId })}
+        >
+          <Text style={styles.buttonText}>Add a contact to the chat</Text>
+        </TouchableOpacity>
         <Text>--------------------------Messages-------------------------------</Text>
         <ScrollView
           contentContainerStyle={styles.messageContainer}
