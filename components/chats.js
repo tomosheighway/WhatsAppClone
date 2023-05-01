@@ -53,11 +53,14 @@ class Chats extends Component {
     }
   }
 
-  // currently lets you create with blank chat name
   createNewChat = async () => {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const { newChatName } = this.state;
     console.log(newChatName);
+    if (!newChatName || newChatName.trim() === '') {
+      this.setState({ errorMessage: 'Chat name cannot be blank' });
+      return;
+    }
     const body = {
       name: newChatName,
     };
