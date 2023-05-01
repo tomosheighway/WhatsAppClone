@@ -37,6 +37,7 @@ class RemoveFromChat extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId, members } = this.state;
+      const { viewChat } = this.props.route.params;
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
         method: 'DELETE',
         headers: {
@@ -51,6 +52,7 @@ class RemoveFromChat extends Component {
           errorMessage: 'User removed from chat',
           members: members.filter((member) => member.user_id !== userId),
         });
+        viewChat();
         // await this.viewChat();
       } else if (response.status === 400) {
         console.log('Bad Request');

@@ -71,6 +71,7 @@ class AddToChat extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId } = this.state;
+      const { viewChat } = this.props.route.params;
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
         method: 'POST',
         headers: {
@@ -81,6 +82,7 @@ class AddToChat extends Component {
       });
       if (response.status === 200) {
         console.log('User added to the chat ');
+        viewChat();
         // await this.viewChat();
       } else if (response.status === 400) {
         console.log('Bad Request');

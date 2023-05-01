@@ -75,6 +75,40 @@ class ViewChats extends Component {
     }
   };
 
+  handleUpdateMessage = async (chatId, messageId, updatedMessage) => {
+    try {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      if (!updatedMessage || updatedMessage.trim() === '') {
+        this.setState({ errorMessage: 'Message cannot be blank' });
+        return;
+      }
+      const body = {
+        message: updatedMessage,
+      };
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/message/${messageId}`, {
+        method: 'PATCH',
+        headers: {
+          'X-Authorization': sessionToken,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      if (response.status === 200) {
+        this.setState({ errorMessage: 'Message has been updated' });
+        this.setState({ updatedMessage: '' });
+      } else if (response.status === 401) {
+        const { navigation } = this.props;
+        console.log('Unauthorized error');
+        navigation.navigate('Login');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   handleNewMessage = async () => {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
@@ -256,14 +290,14 @@ class ViewChats extends Component {
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.leftButtonContainer}
-            onPress={() => navigation.navigate('AddToChat', { data: chatId })}
+            onPress={() => navigation.navigate('AddToChat', { data: chatId, viewChat: this.viewChat.bind(this) })}
           >
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.rightButtonContainer}
-            onPress={() => navigation.navigate('RemoveFromChat', { chatId, members })}
+            onPress={() => navigation.navigate('RemoveFromChat', { chatId, members, viewChat: this.viewChat.bind(this) })}
           >
             <Text style={styles.buttonText}>Remove</Text>
           </TouchableOpacity>
