@@ -287,9 +287,9 @@ class ViewChats extends Component {
                     backgroundColor: bubbleColor,
                     borderRadius: 20,
                     padding: 10,
-                    marginLeft: isSentByUser ? 10 : 50,
+                    marginLeft: isSentByUser ? 50 : 10,
                     marginBottom: 10,
-                    marginRight: isSentByUser ? 50 : 10,
+                    marginRight: isSentByUser ? 10 : 50,
                     alignSelf: textAlign,
                     maxWidth: '80%',
                   }}
@@ -300,10 +300,10 @@ class ViewChats extends Component {
                       {' '}
                       {message.author.last_name}
                     </Text>
-                    <Text style={{ fontSize: 16 }}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
                       {message.message}
                     </Text>
-                    <Text style={{ fontSize: 12, color: 'gray', textAlign: 'right' }}>
+                    <Text style={{ fontSize: 12, color: '#808080', textAlign: 'right' }}>
                       {new Date(message.timestamp).toLocaleString()}
                     </Text>
                     {isSentByUser
