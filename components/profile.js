@@ -104,6 +104,19 @@ class Profile extends Component {
     }
   }
 
+  // using to refresh the page data when returning from the profile page
+  updateUserDetails = async () => {
+    const userInfo = await this.getUserInfo();
+    if (userInfo) {
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const userId = await AsyncStorage.getItem('userId');
+      const photo = await this.getPhoto(userId, sessionToken);
+      this.setState({ userInfo, photo });
+    } else {
+      this.setState({ errorMessage: 'Something went wrong when updating ' });
+    }
+  };
+
   render() {
     const {
       userInfo, errorMessage, photo,
@@ -141,9 +154,16 @@ class Profile extends Component {
         )}
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate('UpdateProfile', { data: userInfo })}
+          onPress={() => navigation.navigate('UpdateProfile', { data: userInfo, updateUserDetails: this.updateUserDetails })}
         >
           <Text style={styles.buttonText}>Update User details</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigation.navigate('CameraScreen')}
+        >
+          <Text style={styles.buttonText}>Camera</Text>
         </TouchableOpacity>
 
         {errorMessage ? <Text>{errorMessage}</Text> : null}

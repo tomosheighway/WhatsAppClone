@@ -87,6 +87,7 @@ class UpdateProfile extends Component {
     const {
       originalData, firstName, lastName, email,
     } = this.state;
+    const { params: { updateUserDetails } } = this.props.route;
     if (firstName === originalData.first_name
         && lastName === originalData.last_name
         && email === originalData.email) {
@@ -126,6 +127,7 @@ class UpdateProfile extends Component {
 
     if (response.status === 200) {
       console.log('User data updated successfully');
+      updateUserDetails();
     } else if (response.status === 401) {
       console.log('Unauthorized error');
       const { navigation } = this.props;
