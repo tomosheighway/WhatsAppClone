@@ -38,6 +38,7 @@ class ViewChats extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId, updatedChatName } = this.state;
+      const { getChats } = this.props.route.params;
       if (!updatedChatName || updatedChatName.trim() === '') {
         this.setState({ errorMessage: 'Chat name cannot be blank' });
         return;
@@ -55,6 +56,7 @@ class ViewChats extends Component {
         body: JSON.stringify(body),
       });
       if (response.status === 200) {
+        getChats();
         this.setState({ errorMessage: 'Chat name has been updated' });
         this.setState({
           chatName: updatedChatName,

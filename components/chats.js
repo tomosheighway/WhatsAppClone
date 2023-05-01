@@ -16,6 +16,7 @@ class Chats extends Component {
     this.state = {
       newChatName: '',
       errorMessage: '',
+      chats: [],
     };
   }
 
@@ -28,41 +29,31 @@ class Chats extends Component {
 
   async getChats() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-    // const userId = await AsyncStorage.getItem('userId');
-
-    return fetch('http://localhost:3333/api/1.0.0/chat', {
+    const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
       method: 'GET',
       headers: {
         'X-Authorization': sessionToken,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-    })
-      .then(async (response) => {
-        if (response.status === 200) {
-          const data = await response.json();
-          console.log(data);
-          return data;
-        }
-        if (response.status === 401) {
-          const { navigation } = this.props;
-          console.log('Unauthorized error');
-          navigation.navigate('Login');
-          return null;
-        }
-        if (response.status === 500) {
-          throw new Error('Server Error');
-        } else {
-          this.setState({ errorMessage: 'Something went wrong' });
-          throw new Error('Something went wrong');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        return null;
-      });
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      this.setState({ chats: data });
+    } else if (response.status === 401) {
+      const { navigation } = this.props;
+      console.log('Unauthorized error');
+      navigation.navigate('Login');
+    } else if (response.status === 500) {
+      throw new Error('Server Error');
+    } else {
+      this.setState({ errorMessage: 'Something went wrong' });
+      throw new Error('Something went wrong');
+    }
   }
 
+  // currently lets you create with blank chat name
   createNewChat = async () => {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const { newChatName } = this.state;
@@ -116,7 +107,7 @@ class Chats extends Component {
         <FlatList
           data={chats}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('ViewChat', { data: item.chat_id })}>
+            <TouchableOpacity onPress={() => navigation.navigate('ViewChat', { data: item.chat_id, getChats: this.getChats.bind(this) })}>
               <Text>
                 ID:
                 {' '}
