@@ -236,7 +236,7 @@ class ViewChats extends Component {
     const messageList = messages.slice().reverse();
     const { navigation } = this.props;
     return (
-      <View>
+      <View style={styles.background}>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
         <Toast
           ref={(ref) => Toast.setRef(ref)}
