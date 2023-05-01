@@ -20,6 +20,7 @@ class ViewChats extends Component {
       members: [],
       messages: [],
       newMessage: '',
+      userId: '',
     };
   }
 
@@ -140,7 +141,8 @@ class ViewChats extends Component {
 
   async viewChat() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-    // const userId = await AsyncStorage.getItem('userId');
+    const userId = await AsyncStorage.getItem('userId');
+    this.setState({ userId });
     const { chatId } = this.state;
     return fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}`, {
       method: 'GET',
@@ -189,94 +191,155 @@ class ViewChats extends Component {
       newMessage,
       updatedChatName,
       chatId,
+      userId,
     } = this.state;
     const messageList = messages.slice().reverse();
     const { navigation } = this.props;
     return (
       <View>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
-        <Text style={styles.title}>Chat</Text>
+        {/* make this a popup thing  */}
 
-        <TextInput
-          placeholder={chatName}
-          value={updatedChatName}
-          onChangeText={(text) => this.setState({ updatedChatName: text })}
-        />
-        <TouchableOpacity onPress={this.handleUpdateChatName}>
-          <Text>Update Chat Name</Text>
-        </TouchableOpacity>
+        <View style={styles.chatNameContainer}>
+          <Text style={styles.title}>{chatName}</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Enter new chat name"
+            value={updatedChatName}
+            onChangeText={(text) => this.setState({ updatedChatName: text })}
+          />
+          <TouchableOpacity style={styles.button} onPress={this.handleUpdateChatName}>
+            <Text style={styles.buttonText}>Update</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Text>{chatName}</Text>
-        <Text>--------------------------Members----------------------------</Text>
-        {members.map((member) => (
-          <Text key={member.user_id}>
-            {member.first_name}
-            {' '}
-            {member.last_name}
-            {' '}
-            (
-            {member.email}
-            )
-          </Text>
-        ))}
+        {/* <View style={styles.membersHeadContainer}>
+          <View style={styles.membersContainer}>
+            <Text style={styles.sectionTitle}>Members</Text>
+            <ScrollView style={styles.scroll}>
+              {members.map((member) => (
+                <Text key={member.user_id} style={styles.member}>
+                  {member.first_name}
+                  {' '}
+                  {member.last_name}
+                </Text>
+              ))}
+            </ScrollView>
+          </View>
 
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={() => navigation.navigate('AddToChat', { data: chatId })}
-        >
-          <Text style={styles.buttonText}>Add a contact to the chat</Text>
-        </TouchableOpacity>
+          <View style={styles.membersButtonsContainer}>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => navigation.navigate('AddToChat', { data: chatId })}
+            >
+              <Text style={styles.buttonText}>Add a contact to the chat</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={() => navigation.navigate('RemoveFromChat', { chatId, members })}
-        >
-          <Text style={styles.buttonText}>Remove a user from the chat</Text>
-        </TouchableOpacity>
-        <Text>--------------------------Messages-------------------------------</Text>
-        <ScrollView
-          contentContainerStyle={styles.messageContainer}
-          showsVerticalScrollIndicator
-                // need to make it defult scroll to the end
-        >
-          {messageList.map((message) => (
-            <View key={message.message_id}>
-              <Text>
-                Message ID:
-                {' '}
-                {message.message_id}
-              </Text>
-              <Text>{new Date(message.timestamp).toLocaleString()}</Text>
-              <Text>
-                Message:
-                {' '}
-                {message.message}
-              </Text>
-              <Text>
-                Author:
-                {' '}
-                {message.author.first_name}
-                {' '}
-                {message.author.last_name}
-                {' '}
-                (
-                {message.author.email}
-                )
-              </Text>
-              <TouchableOpacity onPress={() => this.handleDeleteMessage(message.message_id)}>
-                <Text>Delete</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => navigation.navigate('RemoveFromChat', { chatId, members })}
+            >
+              <Text style={styles.buttonText}>Remove a user from the chat</Text>
+            </TouchableOpacity>
+          </View>
+        </View> */}
+        <Text style={styles.sectionTitle}>Members</Text>
+        <ScrollView style={styles.scroll}>
+          {members.map((member) => (
+            <Text key={member.user_id} style={styles.member}>
+              {member.first_name}
+              {' '}
+              {member.last_name}
+            </Text>
           ))}
         </ScrollView>
-        <TextInput
-          placeholder="Enter Message"
-          value={newMessage}
-          onChangeText={(text) => this.setState({ newMessage: text })}
-        />
-        <TouchableOpacity onPress={this.handleNewMessage}>
-          <Text>Send</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.leftButtonContainer}
+            onPress={() => navigation.navigate('AddToChat', { data: chatId })}
+          >
+            <Text style={styles.buttonText}>Add</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.rightButtonContainer}
+            onPress={() => navigation.navigate('RemoveFromChat', { chatId, members })}
+          >
+            <Text style={styles.buttonText}>Remove</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.sectionTitle}>Messages</Text>
+
+        <View style={{ flex: 1, maxHeight: 500 }}>
+          <ScrollView
+            style={{ flex: 1, marginBottom: 60 }}
+            contentContainerStyle={styles.messageContainer}
+            showsVerticalScrollIndicator
+          >
+            {messageList.map((message) => {
+              const isSentByUser = userId === String(message.author.user_id);
+              const bubbleColor = isSentByUser ? '#09eb5c' : '#67c5f5';
+              const textAlign = isSentByUser ? 'left' : 'right';
+
+              return (
+                <View key={message.message_id}>
+                  <View style={{
+                    backgroundColor: bubbleColor,
+                    borderRadius: 20,
+                    padding: 10,
+                    marginLeft: isSentByUser ? 10 : 50,
+                    marginBottom: 10,
+                    marginRight: isSentByUser ? 50 : 10,
+                    alignSelf: textAlign,
+                    maxWidth: '80%',
+                  }}
+                  >
+                    <Text style={{ fontSize: 16 }}>
+                      {message.author.first_name}
+                      ,
+                      {' '}
+                      {message.author.last_name}
+                    </Text>
+                    <Text style={{ fontSize: 16 }}>
+                      {message.message}
+                    </Text>
+                    <Text style={{ fontSize: 12, color: 'gray', textAlign: 'right' }}>
+                      {new Date(message.timestamp).toLocaleString()}
+                    </Text>
+                    {isSentByUser
+                  && (
+                    <TouchableOpacity onPress={() => this.handleDeleteMessage(message.message_id)} style={{ position: 'absolute', top: 5, right: 10 }}>
+                      <Text style={{ color: 'red', fontSize: 20, fontWeight: 'bold' }}>X</Text>
+                    </TouchableOpacity>
+                  )}
+                  </View>
+                </View>
+              );
+            })}
+
+          </ScrollView>
+          <View style={{
+            position: 'absolute', bottom: 2, left: 0, right: 0, padding: 10, backgroundColor: '#f0f0f0', flexDirection: 'row',
+          }}
+          >
+            <TextInput
+              placeholder="Enter message"
+              value={newMessage}
+              onChangeText={(text) => this.setState({ newMessage: text })}
+              style={{
+                borderWidth: 1, borderColor: '#ccc', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, flex: 1, marginRight: 10,
+              }}
+            />
+            <TouchableOpacity
+              onPress={this.handleNewMessage}
+              style={{
+                backgroundColor: '#67c5f5', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10,
+              }}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Send</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
