@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity,
+  View, Text, TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 class AddToChat extends Component {
   static navigationOptions = {
@@ -82,6 +83,18 @@ class AddToChat extends Component {
       });
       if (response.status === 200) {
         console.log('User added to the chat ');
+        Toast.show({
+          type: 'success',
+          text1: 'User added to the chat',
+          visibilityTime: 6000,
+          style: {
+            backgroundColor: 'black',
+            borderRadius: 10,
+          },
+          text1Style: {
+            color: 'white',
+          },
+        });
         viewChat();
         // await this.viewChat();
       } else if (response.status === 400) {
@@ -110,9 +123,10 @@ class AddToChat extends Component {
       contacts,
     } = this.state;
     return (
+
       <View>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
-
+        <Toast ref={(ref) => Toast.setRef(ref)} />
         <Text>
           {' '}
           Chat ID

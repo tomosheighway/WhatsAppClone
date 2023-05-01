@@ -3,6 +3,7 @@ import {
   View, Text, TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 class RemoveFromChat extends Component {
   static navigationOptions = {
@@ -47,6 +48,11 @@ class RemoveFromChat extends Component {
         },
       });
       if (response.status === 200) {
+        Toast.show({
+          type: 'success',
+          text1: 'User removed from the chat',
+          visibilityTime: 6000,
+        });
         console.log('User removed from chat ');
         this.setState({
           errorMessage: 'User removed from chat',
@@ -81,6 +87,7 @@ class RemoveFromChat extends Component {
     } = this.state;
     return (
       <View>
+        <Toast ref={(ref) => Toast.setRef(ref)} />
         {errorMessage ? <Text>{errorMessage}</Text> : null}
 
         <Text>

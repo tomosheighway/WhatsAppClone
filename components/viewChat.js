@@ -3,6 +3,7 @@ import {
   View, TextInput, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 import styles from '../styles/chatStyles';
 
 class ViewChats extends Component {
@@ -130,6 +131,11 @@ class ViewChats extends Component {
         },
         body: JSON.stringify(body),
       });
+      Toast.show({
+        type: 'success',
+        text1: 'Message sent',
+        visibilityTime: 6000,
+      });
       console.log('Message Sent');
       await this.viewChat();
       this.setState({
@@ -232,6 +238,9 @@ class ViewChats extends Component {
     return (
       <View>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
+        <Toast
+          ref={(ref) => Toast.setRef(ref)}
+        />
         {/* make this a popup thing  */}
 
         <View style={styles.chatNameContainer}>
