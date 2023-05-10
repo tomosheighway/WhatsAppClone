@@ -1,14 +1,13 @@
 import {
-  Camera, CameraType, onCameraReady, CameraPictureOptions,
+  Camera, CameraType,
 } from 'expo-camera';
-// import { Camera } from 'expo-camera';
 import { useState, useEffect } from 'react';
 import {
   Text, TouchableOpacity, View, StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function CameraSendToServer() {
+export default function CameraSendToServer({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = useState(null); // Camera.useCameraPermissions();
   const [camera, setCamera] = useState(null);
@@ -33,20 +32,27 @@ export default function CameraSendToServer() {
     const res = await fetch(data.uri);
     const blob = await res.blob();
 
-    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
-      method: 'POST',
-      headers: {
-        'X-Authorization': sessionToken,
-        'Content-Type': 'image/png',
-      },
-      body: blob,
-    })
-      .then((response) => {
-        console.log('picture added', response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // const { route: { params: { updateUserDetails } } } = navigation;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3333/api/1.0.0/user/${userId}/photo`,
+        {
+          method: 'POST',
+          headers: {
+            'X-Authorization': sessionToken,
+            'Content-Type': 'image/png',
+          },
+          body: blob,
+        },
+      );
+
+      console.log('picture added', response);
+      // await updateUserDetails();
+      navigation.navigate('Profile');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   function toggleCameraType() {
