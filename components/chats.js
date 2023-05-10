@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, FlatList, TouchableOpacity,
+  View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -103,19 +103,36 @@ class Chats extends Component {
   render() {
     const { chats, errorMessage } = this.state;
     const { navigation } = this.props;
+    const reversedChats = [...chats].reverse();
     return (
-      <View>
-        <Text>Chats:</Text>
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
+      <View style={styles.container}>
+        <Text style={styles.title}>Chats:</Text>
+        {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+        <TextInput
+          style={styles.input}
+          placeholder="Enter a chat name"
+          value={this.newChatName}
+          onChangeText={(text) => this.setState({ newChatName: text })}
+        />
+        <TouchableOpacity style={styles.button} onPress={this.createNewChat}>
+          <Text style={styles.buttonText}>Create New Chat</Text>
+        </TouchableOpacity>
         <FlatList
-          data={chats}
+          data={reversedChats}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('ViewChat', { data: item.chat_id, getChats: this.getChats.bind(this) })}>
-              <Text>
+            <TouchableOpacity
+              style={styles.chatItem}
+              onPress={() => navigation.navigate('ViewChat', {
+                data: item.chat_id,
+                getChats: this.getChats.bind(this),
+              })}
+            >
+              <Text style={styles.chatId}>
                 ID:
                 {' '}
                 {item.chat_id}
-                {'   '}
+              </Text>
+              <Text style={styles.chatName}>
                 Name:
                 {' '}
                 {item.name}
@@ -124,18 +141,58 @@ class Chats extends Component {
           )}
           keyExtractor={(item) => item.chat_id.toString()}
         />
-        <TextInput
-          placeholder="Enter Message"
-          value={this.newChatName}
-          onChangeText={(text) => this.setState({ newChatName: text })}
-        />
-        <TouchableOpacity onPress={this.createNewChat}>
-          <Text>Create New Chat</Text>
-        </TouchableOpacity>
-
       </View>
     );
   }
 }
 
 export default Chats;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#ffffff',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 8,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 8,
+    paddingHorizontal: 8,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  chatItem: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
+  },
+  chatId: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  chatName: {
+    fontSize: 16,
+  },
+});

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as EmailValidator from 'email-validator';
 import {
-  View, Text, Button, TouchableOpacity, TextInput,
+  View, Text, Button, TouchableOpacity, TextInput, FlatList, StyleSheet,
 } from 'react-native';
 
 class Contacts extends Component {
@@ -299,9 +299,8 @@ class Contacts extends Component {
 
   render() {
     const { contacts, blockedContacts, errorMessage } = this.state;
-    const { navigation } = this.props;
     return (
-      <View>
+      <View style={styles.container}>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
         <Text>Enter the email of a contact you wish to add</Text>
         <TextInput
@@ -313,72 +312,81 @@ class Contacts extends Component {
           <Text>Add</Text>
         </TouchableOpacity>
 
-        {/* <TouchableOpacity
-          onPress={() => navigation.navigate('AddContact')}
-        >
-          <Text>Add a new contact</Text>
-        </TouchableOpacity> */}
-
-        <Text> ---------------------List of Users contacts--------------------</Text>
-        {contacts.map((contact) => (
-          <View key={contact.user_id}>
-            <Text>
-              {'\n'}
-              {'UserID: '}
-              {contact.user_id}
-              {'\n'}
-              {'Name: '}
-              {contact.first_name}
-              {' '}
-              {contact.last_name}
-              {'\n'}
-              {'Email: '}
-              {contact.email}
-              {'\n'}
-            </Text>
-            <Button
-              title="Block Contact"
-              onPress={() => this.blockContact(contact.user_id)}
-            />
-            <Button
-              title="Delete Contact"
-              onPress={() => this.deleteContact(contact.user_id)}
-            />
-          </View>
-        ))}
+        <Text> ---------List of Users contacts---------</Text>
+        <FlatList
+          data={contacts}
+          keyExtractor={(item) => item.user_id}
+          renderItem={({ item }) => (
+            <View key={item.user_id}>
+              <Text>
+                {'\n'}
+                {'UserID: '}
+                {item.user_id}
+                {'\n'}
+                {'Name: '}
+                {item.first_name}
+                {' '}
+                {item.last_name}
+                {'\n'}
+                {'Email: '}
+                {item.email}
+                {'\n'}
+              </Text>
+              <Button
+                title="Block Contact"
+                onPress={() => this.blockContact(item.user_id)}
+              />
+              <Button
+                title="Delete Contact"
+                onPress={() => this.deleteContact(item.user_id)}
+              />
+            </View>
+          )}
+        />
 
         <Text>
           {'\n'}
-          ---------------------------List of Blocked contacts---------------------------
+          ------List of Blocked contacts-------
         </Text>
-        {blockedContacts.map((blockedContact) => (
-          <View key={blockedContact.user_id}>
-            <Text>
-              {'\n'}
-              {'UserID: '}
-              {blockedContact.user_id}
-              {'\n'}
-              {'Name: '}
-              {blockedContact.first_name}
-              {' '}
-              {blockedContact.last_name}
-              {'\n'}
-              {'Email: '}
-              {blockedContact.email}
-            </Text>
-            <Button
-              title="Un Block Contact"
-              onPress={() => this.unblockContact(blockedContact.user_id)}
-            />
-            <Button
-              title="Delete Contact"
-              onPress={() => this.deleteContact(blockedContact.user_id)}
-            />
-          </View>
-        ))}
+        <FlatList
+          data={blockedContacts}
+          keyExtractor={(item) => item.user_id}
+          renderItem={({ item }) => (
+            <View key={item.user_id}>
+              <Text>
+                {'\n'}
+                {'UserID: '}
+                {item.user_id}
+                {'\n'}
+                {'Name: '}
+                {item.first_name}
+                {' '}
+                {item.last_name}
+                {'\n'}
+                {'Email: '}
+                {item.email}
+              </Text>
+              <Button
+                title="Un Block Contact"
+                onPress={() => this.unblockContact(item.user_id)}
+              />
+              <Button
+                title="Delete Contact"
+                onPress={() => this.deleteContact(item.user_id)}
+              />
+            </View>
+          )}
+        />
       </View>
     );
   }
 }
 
 export default Contacts;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#ffffff',
+  },
+});

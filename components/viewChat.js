@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, Text, TouchableOpacity, ScrollView,
+  View, TextInput, Text, TouchableOpacity, ScrollView, FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
@@ -256,46 +256,18 @@ class ViewChats extends Component {
           </TouchableOpacity>
         </View>
 
-        {/* <View style={styles.membersHeadContainer}>
-          <View style={styles.membersContainer}>
-            <Text style={styles.sectionTitle}>Members</Text>
-            <ScrollView style={styles.scroll}>
-              {members.map((member) => (
-                <Text key={member.user_id} style={styles.member}>
-                  {member.first_name}
-                  {' '}
-                  {member.last_name}
-                </Text>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.membersButtonsContainer}>
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={() => navigation.navigate('AddToChat', { data: chatId })}
-            >
-              <Text style={styles.buttonText}>Add a contact to the chat</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={() => navigation.navigate('RemoveFromChat', { chatId, members })}
-            >
-              <Text style={styles.buttonText}>Remove a user from the chat</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
         <Text style={styles.sectionTitle}>Members</Text>
-        <ScrollView style={styles.scroll}>
-          {members.map((member) => (
-            <Text key={member.user_id} style={styles.member}>
-              {member.first_name}
+        <FlatList
+          style={styles.scroll}
+          data={members}
+          renderItem={({ item }) => (
+            <Text key={item.user_id} style={styles.member}>
+              {item.first_name}
               {' '}
-              {member.last_name}
+              {item.last_name}
             </Text>
-          ))}
-        </ScrollView>
+          )}
+        />
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.leftButtonContainer}
@@ -314,28 +286,30 @@ class ViewChats extends Component {
         <Text style={styles.sectionTitle}>Messages</Text>
 
         <View style={{ flex: 1, maxHeight: 500 }}>
-          <ScrollView
+          {/*  USE A FLAT LIST INSTEAD */}
+          <FlatList
             style={{ flex: 1, marginBottom: 60 }}
             contentContainerStyle={styles.messageContainer}
-            showsVerticalScrollIndicator
-          >
-            {messageList.map((message) => {
+            data={messageList}
+            keyExtractor={(message) => message.message_id}
+            renderItem={({ item: message }) => {
               const isSentByUser = userId === String(message.author.user_id);
               const bubbleColor = isSentByUser ? '#09eb5c' : '#67c5f5';
               const textAlign = isSentByUser ? 'left' : 'right';
 
               return (
                 <View key={message.message_id}>
-                  <View style={{
-                    backgroundColor: bubbleColor,
-                    borderRadius: 20,
-                    padding: 10,
-                    marginLeft: isSentByUser ? 50 : 10,
-                    marginBottom: 10,
-                    marginRight: isSentByUser ? 10 : 50,
-                    alignSelf: textAlign,
-                    maxWidth: '80%',
-                  }}
+                  <View
+                    style={{
+                      backgroundColor: bubbleColor,
+                      borderRadius: 20,
+                      padding: 10,
+                      marginLeft: isSentByUser ? 50 : 10,
+                      marginBottom: 10,
+                      marginRight: isSentByUser ? 10 : 50,
+                      alignSelf: textAlign,
+                      maxWidth: '80%',
+                    }}
                   >
                     <Text style={{ fontSize: 16 }}>
                       {message.author.first_name}
@@ -349,18 +323,21 @@ class ViewChats extends Component {
                     <Text style={{ fontSize: 12, color: '#808080', textAlign: 'right' }}>
                       {new Date(message.timestamp).toLocaleString()}
                     </Text>
-                    {isSentByUser
-                  && (
-                    <TouchableOpacity onPress={() => this.handleDeleteMessage(message.message_id)} style={{ position: 'absolute', top: 5, right: 10 }}>
-                      <Text style={{ color: 'red', fontSize: 20, fontWeight: 'bold' }}>X</Text>
-                    </TouchableOpacity>
-                  )}
+                    {isSentByUser && (
+                      <TouchableOpacity
+                        onPress={() => this.handleDeleteMessage(message.message_id)}
+                        style={{ position: 'absolute', top: 5, right: 10 }}
+                      >
+                        <Text style={{ color: 'red', fontSize: 20, fontWeight: 'bold' }}>
+                          X
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               );
-            })}
-
-          </ScrollView>
+            }}
+          />
           <View style={{
             position: 'absolute', bottom: 2, left: 0, right: 0, padding: 10, backgroundColor: '#f0f0f0', flexDirection: 'row',
           }}
