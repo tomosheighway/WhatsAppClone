@@ -33,7 +33,12 @@ class ViewChats extends Component {
       chatId: data,
     }, async () => {
       await this.viewChat();
+      this.intervalId = setInterval(this.viewChat.bind(this), 5000);
     });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
   handleUpdateChatName = async () => {

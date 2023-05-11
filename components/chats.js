@@ -20,11 +20,19 @@ class Chats extends Component {
     };
   }
 
+  // async componentDidMount() {
+  //   const chats = await this.getChats();
+  //   if (chats) {
+  //     this.setState({ chats });
+  //   }
+  // }
   async componentDidMount() {
-    const chats = await this.getChats();
-    if (chats) {
-      this.setState({ chats });
-    }
+    await this.getChats();
+    this.intervalId = setInterval(this.getChats.bind(this), 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
   async getChats() {
@@ -137,6 +145,13 @@ class Chats extends Component {
                 {' '}
                 {item.name}
               </Text>
+              {item.last_message && item.last_message.message ? (
+                <Text style={styles.chatLastMessage}>
+                  Last Message:
+                  {' '}
+                  {item.last_message.message}
+                </Text>
+              ) : null}
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item.chat_id.toString()}
@@ -194,5 +209,6 @@ const styles = StyleSheet.create({
   },
   chatName: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
