@@ -4,6 +4,9 @@ import {
 } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, Input } from 'react-native-elements';
+import styles from '../styles/accountStyles';
+
 // import Icon from 'react-native-vector-icons/MaterialIcons';   // icon pack
 
 class Login extends Component {
@@ -110,73 +113,44 @@ class Login extends Component {
     const { navigation } = this.props;
 
     return (
-      <View>
-        <TextInput placeholder="Email..." onChangeText={this.handleEmailInput} value={email} />
-        <TextInput placeholder="Password..." onChangeText={this.handlePasswordInput} value={password} secureTextEntry />
 
-        <TouchableOpacity
-          style={styles.buttonContainer}
+      <View style={styles.container}>
+
+        <Text style={styles.title}>Please enter your login details below</Text>
+        <Input
+          placeholder="Email..."
+          leftIcon={{ type: 'material', name: 'email' }}
+          onChangeText={this.handleEmailInput}
+          value={email}
+          containerStyle={styles.textInputContainer}
+          inputStyle={styles.textInput}
+        />
+        <Input
+          placeholder="Password..."
+          leftIcon={{ type: 'material', name: 'lock' }}
+          onChangeText={this.handlePasswordInput}
+          value={password}
+          secureTextEntry
+          containerStyle={styles.textInputContainer}
+          inputStyle={styles.textInput}
+        />
+
+        <Button
+          title="Login"
+          buttonStyle={styles.buttonContainer}
           onPress={this.handleLogin}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        />
 
-        <TouchableOpacity
-          style={styles.buttonContainer}
+        <Button
+          title="Create a account"
+          buttonStyle={styles.buttonContainer}
           onPress={() => navigation.navigate('Signup')}
-        >
-          <Text style={styles.buttonText}>Go to signup</Text>
-        </TouchableOpacity>
+        />
 
         {errorMessage ? <Text>{errorMessage}</Text> : null}
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ebebeb',
-  },
-
-  textInputContainer: {
-    marginBottom: 20,
-    width: '80%',
-    borderBottomColor: '#222',
-    borderBottomWidth: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  textInput: {
-    fontSize: 18,
-    marginLeft: 5,
-    flex: 1,
-    padding: 10,
-    color: '#222',
-  },
-  textInputIcon: {
-    marginLeft: 5,
-    marginRight: 5,
-  },
-
-  text: {
-    color: '#101010',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    backgroundColor: '#222',
-    borderRadius: 5,
-    padding: 10,
-    margin: 20,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  },
-});
 
 export default Login;

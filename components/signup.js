@@ -3,6 +3,8 @@ import {
   Text, TextInput, View, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
+import { Input, Button } from 'react-native-elements';
+import styles from '../styles/accountStyles';
 
 class Signup extends Component {
   static navigationOptions = {
@@ -100,52 +102,64 @@ class Signup extends Component {
   };
 
   render() {
-    // const { navigation } = this.props;
     const {
       email, password, firstName, lastName, errorMessage,
     } = this.state;
-    return (
-      <View>
-        <TextInput placeholder="Email..." onChangeText={this.handleEmailInput} value={email} />
-        <TextInput placeholder="Password..." onChangeText={this.handlePasswordInput} value={password} secureTextEntry />
-        <TextInput placeholder="First Name..." onChangeText={this.handleFirstNameInput} value={firstName} />
-        <TextInput placeholder="Last Name..." onChangeText={this.handleLastNameInput} value={lastName} />
+    const { navigation } = this.props;
 
-        <TouchableOpacity // just deals with valiadtion wont return user to login page yet
-          style={styles.buttonContainer}
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Please enter your details to signup</Text>
+
+        <Input
+          placeholder="Email..."
+          leftIcon={{ type: 'material', name: 'email' }}
+          onChangeText={this.handleEmailInput}
+          value={email}
+          containerStyle={styles.textInputContainer}
+          inputStyle={styles.textInput}
+        />
+        <Input
+          placeholder="Password..."
+          leftIcon={{ type: 'material', name: 'lock' }}
+          onChangeText={this.handlePasswordInput}
+          value={password}
+          secureTextEntry
+          containerStyle={styles.textInputContainer}
+          inputStyle={styles.textInput}
+        />
+        <Input
+          placeholder="First Name..."
+          leftIcon={{ type: 'material', name: 'person' }}
+          onChangeText={this.handleFirstNameInput}
+          value={firstName}
+          containerStyle={styles.textInputContainer}
+          inputStyle={styles.textInput}
+        />
+        <Input
+          placeholder="Last Name..."
+          leftIcon={{ type: 'material', name: 'person' }}
+          onChangeText={this.handleLastNameInput}
+          value={lastName}
+          containerStyle={styles.textInputContainer}
+          inputStyle={styles.textInput}
+        />
+
+        <Button
+          title="Signup"
+          buttonStyle={styles.buttonContainer}
           onPress={this.handleSignup}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
+        />
+        <Button
+          title="Already have a account?"
+          buttonStyle={styles.buttonContainer}
+          onPress={() => navigation.navigate('Login')}
+        />
 
         {errorMessage ? <Text>{errorMessage}</Text> : null}
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ebebeb',
-  },
-  text: {
-    color: '#101010',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    backgroundColor: '#222',
-    borderRadius: 5,
-    padding: 10,
-    margin: 20,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  },
-});
 
 export default Signup;
