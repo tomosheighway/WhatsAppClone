@@ -49,6 +49,7 @@ class ViewChats extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId, updatedChatName } = this.state;
+      // eslint-disable-next-line react/destructuring-assignment
       const { getChats } = this.props.route.params;
       if (!updatedChatName || updatedChatName.trim() === '') {
         this.setState({ errorMessage: 'Chat name cannot be blank' });
@@ -192,6 +193,10 @@ class ViewChats extends Component {
     }
   };
 
+  handleNewMessageAdded = () => {
+    this.flatListRef.current.scrollToEnd({ animated: true });
+  };
+
   async viewChat() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
@@ -234,10 +239,6 @@ class ViewChats extends Component {
         return null;
       });
   }
-
-  handleNewMessageAdded = () => {
-    this.flatListRef.current.scrollToEnd({ animated: true });
-  };
 
   render() {
     const {

@@ -54,6 +54,7 @@ class Login extends Component {
     this.setState({ password: pass });
   };
 
+  // eslint-disable-next-line class-methods-use-this
   isStrongPassword = (password) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/; // (including: one uppercase, one number and one special
     return passwordRegex.test(password);

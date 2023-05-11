@@ -73,6 +73,7 @@ class AddToChat extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId } = this.state;
+      // eslint-disable-next-line react/destructuring-assignment
       const { viewChat } = this.props.route.params;
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
         method: 'POST',
@@ -120,7 +121,7 @@ class AddToChat extends Component {
   };
 
   render() {
-    const { chatId, errorMessage, contacts } = this.state;
+    const { errorMessage, contacts } = this.state;
     return (
       <View>
 

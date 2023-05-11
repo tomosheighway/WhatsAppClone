@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as EmailValidator from 'email-validator';
 import {
-  View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet,
+  View, Text, TouchableOpacity, FlatList, StyleSheet,
 } from 'react-native';
 import {
-  Icon, Button, Input, ListItem, h1,
+  Icon, Input, ListItem,
 } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 

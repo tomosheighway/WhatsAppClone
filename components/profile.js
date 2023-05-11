@@ -4,7 +4,6 @@ import {
   Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import UpdateProfile from './updateProfile';
 
 class Profile extends Component {
   static navigationOptions = {
@@ -38,14 +37,6 @@ class Profile extends Component {
   componentWillUnmount() {
     this.unsubscribe();
   }
-
-  checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('sessionToken');
-    const { navigation } = this.props;
-    if (value == null) {
-      navigation.navigate('Login');
-    }
-  };
 
   // getting user details ------
   async getUserInfo() {
@@ -120,6 +111,14 @@ class Profile extends Component {
       return null;
     }
   }
+
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('sessionToken');
+    const { navigation } = this.props;
+    if (value == null) {
+      navigation.navigate('Login');
+    }
+  };
 
   // using to refresh the page data when returning from the profile page
   updateUserDetails = async () => {
