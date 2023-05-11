@@ -104,4 +104,43 @@ export default StyleSheet.create({
     backgroundColor: 'lightblue',
     padding: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  saveButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#EFEFF4',
+    borderRadius: 5,
+    padding: 10,
+  },
+  cancelButtonText: {
+    color: '#007AFF',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 });

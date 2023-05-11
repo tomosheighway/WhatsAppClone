@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, Text, TouchableOpacity, ScrollView, FlatList,
+  View, TextInput, Text, TouchableOpacity, FlatList,
+  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
@@ -13,6 +14,7 @@ class ViewChats extends Component {
 
   constructor(props) {
     super(props);
+    this.flatListRef = React.createRef();
     this.state = {
       chatId: null,
       errorMessage: '',
@@ -22,6 +24,8 @@ class ViewChats extends Component {
       messages: [],
       newMessage: '',
       userId: '',
+      editMessageId: null,
+      isModalVisible: false,
     };
   }
 
@@ -79,6 +83,7 @@ class ViewChats extends Component {
     } catch (error) {
       console.error(error);
     }
+    this.setState({ isModalVisible: false });
   };
 
   handleUpdateMessage = async (chatId, messageId, updatedMessage) => {
@@ -102,6 +107,7 @@ class ViewChats extends Component {
       });
       if (response.status === 200) {
         this.setState({ errorMessage: 'Message has been updated' });
+        this.viewChat();
         this.setState({ updatedMessage: '' });
       } else if (response.status === 401) {
         const { navigation } = this.props;
@@ -141,8 +147,10 @@ class ViewChats extends Component {
         text1: 'Message sent',
         visibilityTime: 6000,
       });
+
       console.log('Message Sent');
       await this.viewChat();
+      this.handleNewMessageAdded();
       this.setState({
         errorMessage: 'Message Sent',
         newMessage: '',
@@ -227,6 +235,10 @@ class ViewChats extends Component {
       });
   }
 
+  handleNewMessageAdded = () => {
+    this.flatListRef.current.scrollToEnd({ animated: true });
+  };
+
   render() {
     const {
       errorMessage,
@@ -237,6 +249,9 @@ class ViewChats extends Component {
       updatedChatName,
       chatId,
       userId,
+      editMessageId,
+      updatedMessage,
+      isModalVisible,
     } = this.state;
     const messageList = messages.slice().reverse();
     const { navigation } = this.props;
@@ -248,16 +263,36 @@ class ViewChats extends Component {
         />
         {/* make this a popup thing  */}
 
+        <Modal visible={isModalVisible} animationType="slide" transparent>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Update Chat Name</Text>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Enter new chat name"
+                value={updatedChatName}
+                onChangeText={(text) => this.setState({ updatedChatName: text })}
+              />
+              <TouchableOpacity style={styles.saveButton} onPress={this.handleUpdateChatName}>
+                <Text style={styles.saveButtonText}>Update</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => this.setState({ isModalVisible: false })}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <View style={styles.chatNameContainer}>
           <Text style={styles.title}>{chatName}</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter new chat name"
-            value={updatedChatName}
-            onChangeText={(text) => this.setState({ updatedChatName: text })}
-          />
-          <TouchableOpacity style={styles.button} onPress={this.handleUpdateChatName}>
-            <Text style={styles.buttonText}>Update</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.setState({ isModalVisible: true })}
+          >
+            <Text style={styles.buttonText}>Update Chat Name</Text>
           </TouchableOpacity>
         </View>
 
@@ -288,11 +323,13 @@ class ViewChats extends Component {
             <Text style={styles.buttonText}>Remove</Text>
           </TouchableOpacity>
         </View>
+
         <Text style={styles.sectionTitle}>Messages</Text>
 
         <View style={{ flex: 1, maxHeight: 500 }}>
-          {/*  USE A FLAT LIST INSTEAD */}
+
           <FlatList
+            ref={this.flatListRef}
             style={{ flex: 1, marginBottom: 60 }}
             contentContainerStyle={styles.messageContainer}
             data={messageList}
@@ -329,22 +366,47 @@ class ViewChats extends Component {
                       {new Date(message.timestamp).toLocaleString()}
                     </Text>
                     {isSentByUser && (
+                    <View style={{ flexDirection: 'row' }}>
+                      {editMessageId === message.message_id ? (
+                        <TouchableOpacity
+                          onPress={() => this.handleUpdateMessage(message.message_id)}
+                          style={{ position: 'absolute', top: 5, right: 50 }}
+                        >
+                          <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }}>
+                            Save
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => this.setState({ editMessageId: message.message_id })}
+                          style={{ position: 'absolute', top: -70, right: 50 }}
+                        >
+                          <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }}>
+                            Edit
+                          </Text>
+                        </TouchableOpacity>
+                      )}
                       <TouchableOpacity
                         onPress={() => this.handleDeleteMessage(message.message_id)}
-                        style={{ position: 'absolute', top: 5, right: 10 }}
+                        style={{ position: 'absolute', top: -70, right: 10 }}
                       >
                         <Text style={{ color: 'red', fontSize: 20, fontWeight: 'bold' }}>
                           X
                         </Text>
                       </TouchableOpacity>
+                    </View>
                     )}
+
                   </View>
                 </View>
               );
             }}
+            onContentSizeChange={() => this.flatListRef.current.scrollToEnd({ animated: true })}
+            onLayout={() => this.flatListRef.current.scrollToEnd({ animated: true })}
           />
+
           <View style={{
-            position: 'absolute', bottom: 2, left: 0, right: 0, padding: 10, backgroundColor: '#f0f0f0', flexDirection: 'row',
+            position: 'absolute', bottom: 2, left: 0, right: 0, padding: 10, backgroundColor: '', flexDirection: 'row',
           }}
           >
             <TextInput
@@ -352,7 +414,7 @@ class ViewChats extends Component {
               value={newMessage}
               onChangeText={(text) => this.setState({ newMessage: text })}
               style={{
-                borderWidth: 1, borderColor: '#ccc', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, flex: 1, marginRight: 10,
+                borderWidth: 1, borderColor: '#000', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, flex: 1, marginRight: 10,
               }}
             />
             <TouchableOpacity
@@ -365,6 +427,38 @@ class ViewChats extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        <Modal
+          visible={editMessageId !== null}
+          animationType="slide"
+          transparent
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Update a message</Text>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Enter new message"
+                value={updatedMessage}
+                onChangeText={(text) => this.setState({ updatedMessage: text })}
+              />
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={() => {
+                  this.handleUpdateMessage(chatId, editMessageId, updatedMessage);
+                  this.setState({ editMessageId: null });
+                }}
+              >
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => this.setState({ editMessageId: null })}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
