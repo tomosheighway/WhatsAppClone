@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Text, TouchableOpacity,
-  Image,
+  View, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text, Button } from 'react-native-elements';
+import styles from '../styles/profileStyles';
 
 class Profile extends Component {
   static navigationOptions = {
@@ -22,6 +23,7 @@ class Profile extends Component {
     const { navigation } = this.props;
     this.unsubscribe = navigation.addListener('focus', () => {
       this.checkLoggedIn();
+      this.updateUserDetails();
     });
     if (userInfo) {
       console.log(userInfo);
@@ -169,84 +171,58 @@ class Profile extends Component {
     const { navigation } = this.props;
 
     return (
-      <View>
-        <Image source={{ uri: photo }} style={{ width: 200, height: 200 }} />
+      <View style={styles.container}>
+        <View style={styles.photoContainer}>
+          <Image source={{ uri: photo }} style={styles.photo} />
+        </View>
         {userInfo && (
-          <>
-            <Text>Your user details are shown below:</Text>
-            <Text>
-              User ID:
-              {' '}
-              {userInfo.user_id}
-            </Text>
-
-            <Text>
-              First name:
-              {' '}
-              {userInfo.first_name}
-            </Text>
-            <Text>
-              Last name:
-              {' '}
-              {userInfo.last_name}
-            </Text>
-            <Text>
-              Email:
-              {' '}
-              {userInfo.email}
-            </Text>
-          </>
+          <View style={styles.detailsContainer}>
+            <Text h4 style={styles.detailsTitle}>Your user details are shown below:</Text>
+            <View style={styles.details}>
+              <Text style={styles.detailsItem}>
+                User ID:
+                {' '}
+                {userInfo.user_id}
+              </Text>
+              <Text style={styles.detailsItem}>
+                First name:
+                {' '}
+                {userInfo.first_name}
+              </Text>
+              <Text style={styles.detailsItem}>
+                Last name:
+                {' '}
+                {userInfo.last_name}
+              </Text>
+              <Text style={styles.detailsItem}>
+                Email:
+                {' '}
+                {userInfo.email}
+              </Text>
+            </View>
+          </View>
         )}
-        <TouchableOpacity
-          style={styles.buttonContainer}
+        <Button
+          title="Update User details"
+          containerStyle={{ marginVertical: 10 }}
           onPress={() => navigation.navigate('UpdateProfile', { data: userInfo, updateUserDetails: this.updateUserDetails })}
-        >
-          <Text style={styles.buttonText}>Update User details</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonContainer}
+        />
+        <Button
+          title="Take a new profile photo"
+          containerStyle={{ marginVertical: 10 }}
           onPress={() => navigation.navigate('CameraScreen', { updateUserDetails: this.updateUserDetails })}
-        >
-          <Text style={styles.buttonText}>Camera</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonContainer}
+        />
+        <Button
+          title="Logout"
+          containerStyle={{ marginVertical: 10 }}
           onPress={() => {
             this.logout();
             this.checkLoggedIn();
           }}
-        >
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
+        />
+        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
       </View>
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ebebeb',
-  },
-  text: {
-    color: '#101010',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    backgroundColor: '#222',
-    borderRadius: 5,
-    padding: 10,
-    margin: 20,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  },
-});
-
 export default Profile;

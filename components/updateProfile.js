@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  View, Text,
 } from 'react-native';
 import emailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, Input } from 'react-native-elements';
 
 class UpdateProfile extends Component {
   static navigationOptions = {
@@ -151,75 +152,49 @@ class UpdateProfile extends Component {
       password,
       errorMessage,
     } = this.state;
+
     return (
       <View>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
 
-        <Text> First Name: </Text>
-        <TextInput
+        <Input
+          label="First Name"
           value={firstName}
           onChangeText={(val) => this.setState({ firstName: val })}
         />
 
-        <Text> Last Name: </Text>
-        <TextInput
+        <Input
+          label="Last Name"
           value={lastName}
           onChangeText={(val) => this.setState({ lastName: val })}
         />
 
-        <Text> Email:</Text>
-        <TextInput
+        <Input
+          label="Email"
           value={email}
           onChangeText={(val) => this.setState({ email: val })}
         />
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={this.updateProfile}
-        >
-          <Text style={styles.buttonText}>Update Profile</Text>
-        </TouchableOpacity>
 
-        <Text>Password: </Text>
-        <TextInput
-          placeholder=" New Password..."
-          onChangeText={this.handlePasswordInput}
+        <Button
+          title="Update Profile"
+          onPress={this.updateProfile}
+        />
+
+        <Input
+          label="New Password"
+          placeholder="Enter new password"
           value={password}
+          onChangeText={this.handlePasswordInput}
           secureTextEntry
         />
 
-        <TouchableOpacity
-          style={styles.buttonContainer}
+        <Button
+          title="Update Password"
           onPress={this.handleNewPassword}
-        >
-          <Text style={styles.buttonText}>Update password</Text>
-        </TouchableOpacity>
+        />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ebebeb',
-  },
-  text: {
-    color: '#101010',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    backgroundColor: '#222',
-    borderRadius: 5,
-    padding: 10,
-    margin: 20,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  },
-});
 
 export default UpdateProfile;

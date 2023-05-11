@@ -32,8 +32,6 @@ export default function CameraSendToServer({ navigation }) {
     const res = await fetch(data.uri);
     const blob = await res.blob();
 
-    // const { route: { params: { updateUserDetails } } } = navigation;
-
     try {
       const response = await fetch(
         `http://localhost:3333/api/1.0.0/user/${userId}/photo`,
@@ -48,7 +46,6 @@ export default function CameraSendToServer({ navigation }) {
       );
 
       console.log('picture added', response);
-      // await updateUserDetails();
       navigation.navigate('Profile');
     } catch (err) {
       console.log(err);

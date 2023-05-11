@@ -39,6 +39,7 @@ class RemoveFromChat extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId, members } = this.state;
+      // eslint-disable-next-line react/destructuring-assignment
       const { viewChat } = this.props.route.params;
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
         method: 'DELETE',
