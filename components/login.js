@@ -5,8 +5,12 @@ import {
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Input } from 'react-native-elements';
+
+import { showMessage } from 'react-native-flash-message'; // Import the showMessage function
+import FlashMessage from 'react-native-flash-message';
 import styles from '../styles/accountStyles';
 
+// import 'react-native-flash-message/styles/default'; // Import the default styles
 // import Icon from 'react-native-vector-icons/MaterialIcons';   // icon pack
 
 class Login extends Component {
@@ -58,7 +62,6 @@ class Login extends Component {
   handleLogin = () => {
     const { email, password } = this.state;
     if (!email || !password) {
-      this.setState({ errorMessage: 'Please fill in all of the fields' });
       return;
     }
     if (!EmailValidator.validate(email)) {
@@ -97,7 +100,16 @@ class Login extends Component {
           const { navigation } = this.props;
           await AsyncStorage.setItem('sessionToken', responseJson.token);
           await AsyncStorage.setItem('userId', responseJson.id);
-          navigation.navigate('MainAppNav');
+          showMessage({
+            message: 'Logging in.......',
+            type: 'success',
+            backgroundColor: 'green',
+            color: '#fff',
+          });
+
+          setTimeout(() => {
+            navigation.navigate('MainAppNav');
+          }, 1000);
         } catch {
           throw new Error('Something wrong');
         }
@@ -148,6 +160,7 @@ class Login extends Component {
         />
 
         {errorMessage ? <Text>{errorMessage}</Text> : null}
+        <FlashMessage position="top" />
       </View>
     );
   }
