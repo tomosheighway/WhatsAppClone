@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 export default function ChatsNav() {
   return (
     <Stack.Navigator initialRouteName="Chats">
-      <Stack.Screen name="Chats" component={Chats} />
+      <Stack.Screen name="Chats" component={Chats} options={{ headerShown: false }} />
       <Stack.Screen name="ViewChat" component={ViewChat} />
       <Stack.Screen name="AddToChat" component={AddToChat} />
       <Stack.Screen name="RemoveFromChat" component={RemoveFromChat} />

@@ -33,9 +33,9 @@ class MainAppNav extends Component {
 
   render() {
     return (
-      <Tab.Navigator initialRouteName="Home">
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Chats" component={ChatsNav} options={{ headerShown: false }} />
+      <Tab.Navigator initialRouteName="Chats">
+        {/* <Tab.Screen name="Home" component={Home} /> */}
+        <Tab.Screen name="Chats" component={ChatsNav} />
         <Tab.Screen name="Contacts" component={ContactsNav} />
         <Tab.Screen name="Profile" component={ProfileNav} />
       </Tab.Navigator>
