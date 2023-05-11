@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as EmailValidator from 'email-validator';
 import {
-  View, Text, Button, TouchableOpacity, TextInput, FlatList, StyleSheet,
+  View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet,
 } from 'react-native';
+import { Icon, Button, Input } from 'react-native-elements';
 
 class Contacts extends Component {
   static navigationOptions = {
@@ -303,22 +304,25 @@ class Contacts extends Component {
       <View style={styles.container}>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
         <Text>Enter the email of a contact you wish to add</Text>
-        <TextInput
-          placeholder="Email...."
-          onChangeText={(text) => this.setState({ email: text })}
-        />
+        <View style={styles.inputContainer}>
 
-        <TouchableOpacity onPress={this.handleAddContact}>
-          <Text>Add</Text>
-        </TouchableOpacity>
+          <Input
+            containerStyle={styles.input}
+            placeholder="Email...."
+            onChangeText={(text) => this.setState({ email: text })}
+          />
+          <TouchableOpacity style={styles.addButton} onPress={this.handleAddContact}>
+            <Text style={styles.addButtonText}>Add</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Text> ---------List of Users contacts---------</Text>
+        <Text style={styles.header}>Your contacts</Text>
         <FlatList
           data={contacts}
           keyExtractor={(item) => item.user_id}
           renderItem={({ item }) => (
-            <View key={item.user_id}>
-              <Text>
+            <View key={item.user_id} style={styles.item}>
+              <Text style={styles.itemText}>
                 {'\n'}
                 {'UserID: '}
                 {item.user_id}
@@ -332,28 +336,29 @@ class Contacts extends Component {
                 {item.email}
                 {'\n'}
               </Text>
-              <Button
-                title="Block Contact"
+              <TouchableOpacity
                 onPress={() => this.blockContact(item.user_id)}
-              />
-              <Button
-                title="Delete Contact"
+                style={styles.icon}
+              >
+                <Icon name="lock" type="material-community" color="#ff0000" />
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => this.deleteContact(item.user_id)}
-              />
+                style={styles.icon}
+              >
+                <Icon name="close" type="material-community" color="#ff0000" />
+              </TouchableOpacity>
             </View>
           )}
         />
 
-        <Text>
-          {'\n'}
-          ------List of Blocked contacts-------
-        </Text>
+        <Text style={styles.header}>Blocked contacts</Text>
         <FlatList
           data={blockedContacts}
           keyExtractor={(item) => item.user_id}
           renderItem={({ item }) => (
-            <View key={item.user_id}>
-              <Text>
+            <View key={item.user_id} style={styles.item}>
+              <Text style={styles.itemText}>
                 {'\n'}
                 {'UserID: '}
                 {item.user_id}
@@ -365,15 +370,20 @@ class Contacts extends Component {
                 {'\n'}
                 {'Email: '}
                 {item.email}
+                {'\n'}
               </Text>
-              <Button
-                title="Un Block Contact"
+              <TouchableOpacity
                 onPress={() => this.unblockContact(item.user_id)}
-              />
-              <Button
-                title="Delete Contact"
+                style={styles.icon}
+              >
+                <Icon name="lock-open" type="material-community" color="#008000" />
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => this.deleteContact(item.user_id)}
-              />
+                style={styles.icon}
+              >
+                <Icon name="close" type="material-community" color="#ff0000" />
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -388,5 +398,44 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#ffffff',
+  },
+  header: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemText: {
+    flex: 1,
+  },
+  icon: {
+    padding: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  inputLabel: {
+    flex: 1,
+    marginRight: 8,
+  },
+  input: {
+    flex: 2,
+  },
+  addButton: {
+    backgroundColor: 'green',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
