@@ -4,6 +4,7 @@ import {
   Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UpdateProfile from './updateProfile';
 
 class Profile extends Component {
   static navigationOptions = {
@@ -19,6 +20,10 @@ class Profile extends Component {
 
   async componentDidMount() {
     const userInfo = await this.getUserInfo();
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
+      this.checkLoggedIn();
+    });
     if (userInfo) {
       console.log(userInfo);
       const sessionToken = await AsyncStorage.getItem('sessionToken');
@@ -29,6 +34,18 @@ class Profile extends Component {
       this.setState({ errorMessage: 'Something went wrong' });
     }
   }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('sessionToken');
+    const { navigation } = this.props;
+    if (value == null) {
+      navigation.navigate('Login');
+    }
+  };
 
   // getting user details ------
   async getUserInfo() {
@@ -117,6 +134,35 @@ class Profile extends Component {
     }
   };
 
+  async logout() {
+    console.log('logout');
+    return fetch('http://localhost:3333/api/1.0.0/logout', {
+      method: 'POST',
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('sessionToken'),
+      },
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+          await AsyncStorage.removeItem('sessionToken');
+          await AsyncStorage.removeItem('userId');
+          // this.props.navigation.navigate("Login")
+          this.checkLoggedIn();
+        } else if (response.status === 401) {
+          console.log('Unauthroised error');
+          await AsyncStorage.removeItem('sessionToken');
+          await AsyncStorage.removeItem('userId');
+          // this.props.navigation.navigate("Login")
+          this.checkLoggedIn();
+        } else {
+          throw new Error('something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.log('catch error: ', error);
+      });
+  }
+
   render() {
     const {
       userInfo, errorMessage, photo,
@@ -161,11 +207,20 @@ class Profile extends Component {
 
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate('CameraScreen')}
+          onPress={() => navigation.navigate('CameraScreen', { updateUserDetails: this.updateUserDetails })}
         >
           <Text style={styles.buttonText}>Camera</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => {
+            this.logout();
+            this.checkLoggedIn();
+          }}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
       </View>
     );

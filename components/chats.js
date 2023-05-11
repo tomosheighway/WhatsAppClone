@@ -118,7 +118,7 @@ class Chats extends Component {
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
         <TextInput
           style={styles.input}
-          placeholder="Enter a chat name"
+          placeholder="Enter a new chat name"
           value={this.newChatName}
           onChangeText={(text) => this.setState({ newChatName: text })}
         />

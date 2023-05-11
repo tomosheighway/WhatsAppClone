@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity,
+  View, Text, TouchableOpacity, FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import { ListItem } from 'react-native-elements';
 
 class AddToChat extends Component {
   static navigationOptions = {
@@ -83,6 +84,7 @@ class AddToChat extends Component {
       });
       if (response.status === 200) {
         console.log('User added to the chat ');
+        this.setState({ errorMessage: 'User added' });
         Toast.show({
           type: 'success',
           text1: 'User added to the chat',
@@ -90,6 +92,7 @@ class AddToChat extends Component {
           style: {
             backgroundColor: 'black',
             borderRadius: 10,
+            zIndex: 9999, // Add this line
           },
           text1Style: {
             color: 'white',
@@ -117,46 +120,44 @@ class AddToChat extends Component {
   };
 
   render() {
-    const {
-      chatId,
-      errorMessage,
-      contacts,
-    } = this.state;
+    const { chatId, errorMessage, contacts } = this.state;
     return (
-
       <View>
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
-        <Toast ref={(ref) => Toast.setRef(ref)} />
-        <Text>
-          {' '}
-          Chat ID
-          {' '}
-          { chatId }
-          {' '}
-        </Text>
 
-        <Text> This is a list of your contacts. Select a user to add to the chat</Text>
-        {contacts.map((contact) => (
-          <View key={contact.user_id}>
-            <Text>
-              {'\n'}
-              {'UserID: '}
-              {contact.user_id}
-              {'\n'}
-              {'Name: '}
-              {contact.first_name}
-              {' '}
-              {contact.last_name}
-              {'\n'}
-              {'Email: '}
-              {contact.email}
-              {'\n'}
+        <Toast ref={(ref) => Toast.setRef(ref)} />
+
+        {errorMessage ? (
+          <View style={{ backgroundColor: 'red', padding: 10 }}>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>
+              {errorMessage}
             </Text>
-            <TouchableOpacity onPress={() => this.handleAddUserToChat(contact.user_id)}>
-              <Text>Add to Chat</Text>
-            </TouchableOpacity>
           </View>
-        ))}
+        ) : (
+          <View style={{ padding: 10 }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+              Select a user to add to the chat
+            </Text>
+          </View>
+        )}
+        <FlatList
+          data={contacts}
+          keyExtractor={(contact) => contact.user_id.toString()}
+          renderItem={({ item: contact }) => (
+            <ListItem bottomDivider>
+              <ListItem.Content>
+                <ListItem.Title>
+                  {contact.first_name}
+                  {' '}
+                  {contact.last_name}
+                </ListItem.Title>
+                <ListItem.Subtitle>{contact.email}</ListItem.Subtitle>
+              </ListItem.Content>
+              <TouchableOpacity onPress={() => this.handleAddUserToChat(contact.user_id)}>
+                <Text>Add to Chat</Text>
+              </TouchableOpacity>
+            </ListItem>
+          )}
+        />
       </View>
     );
   }

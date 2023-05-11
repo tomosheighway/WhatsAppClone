@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity,
+  View, Text, TouchableOpacity, FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import { ListItem } from 'react-native-elements';
 
 class RemoveFromChat extends Component {
   static navigationOptions = {
@@ -80,40 +81,42 @@ class RemoveFromChat extends Component {
   };
 
   render() {
-    const {
-      chatId,
-      errorMessage,
-      members,
-    } = this.state;
+    const { errorMessage, members } = this.state;
     return (
       <View>
         <Toast ref={(ref) => Toast.setRef(ref)} />
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
-
-        <Text>
-          {' '}
-          Chat ID
-          {' '}
-          { chatId }
-          {' '}
-        </Text>
-        {members.map((member) => (
-          <View key={member.user_id}>
-            <Text>
-              {member.first_name}
-              {' '}
-              {member.last_name}
-              {' '}
-              (
-              {member.email}
-              )
+        {errorMessage ? (
+          <View style={{ backgroundColor: 'red', padding: 10 }}>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>
+              {errorMessage}
             </Text>
-            <TouchableOpacity onPress={() => this.handleRemoveUserFromChat(member.user_id)}>
-              <Text>Delete user</Text>
-            </TouchableOpacity>
           </View>
-        ))}
-
+        ) : (
+          <View style={{ padding: 10 }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+              Select a user to remove from the chat
+            </Text>
+          </View>
+        )}
+        <FlatList
+          data={members}
+          keyExtractor={(member) => member.user_id.toString()}
+          renderItem={({ item: member }) => (
+            <ListItem bottomDivider>
+              <ListItem.Content>
+                <ListItem.Title>
+                  {member.first_name}
+                  {' '}
+                  {member.last_name}
+                </ListItem.Title>
+                <ListItem.Subtitle>{member.email}</ListItem.Subtitle>
+              </ListItem.Content>
+              <TouchableOpacity onPress={() => this.handleRemoveUserFromChat(member.user_id)}>
+                <Text>Delete user</Text>
+              </TouchableOpacity>
+            </ListItem>
+          )}
+        />
       </View>
     );
   }

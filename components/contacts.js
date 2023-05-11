@@ -4,7 +4,10 @@ import * as EmailValidator from 'email-validator';
 import {
   View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet,
 } from 'react-native';
-import { Icon, Button, Input } from 'react-native-elements';
+import {
+  Icon, Button, Input, ListItem, h1,
+} from 'react-native-elements';
+import Toast from 'react-native-toast-message';
 
 class Contacts extends Component {
   static navigationOptions = {
@@ -47,6 +50,20 @@ class Contacts extends Component {
       console.log(`User ID: ${userId}`);
       await this.addUserAsContact(userId);
     } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Contact couldnt be found',
+        style: {
+          backgroundColor: '#000000',
+        },
+        text1Style: {
+          color: '#FFFFFF',
+        },
+        text2Style: {
+          color: '#FFFFFF',
+        },
+      });
       this.setState({ errorMessage: 'That email address couldnt be linked with a user of this app' });
       console.log('User not found');
     }
@@ -303,7 +320,10 @@ class Contacts extends Component {
     return (
       <View style={styles.container}>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
-        <Text>Enter the email of a contact you wish to add</Text>
+        <Toast
+          ref={(ref) => Toast.setRef(ref)}
+        />
+        <Text style={styles.header}>Enter the email of a contact you wish to add</Text>
         <View style={styles.inputContainer}>
 
           <Input
@@ -321,34 +341,36 @@ class Contacts extends Component {
           data={contacts}
           keyExtractor={(item) => item.user_id}
           renderItem={({ item }) => (
-            <View key={item.user_id} style={styles.item}>
-              <Text style={styles.itemText}>
-                {'\n'}
-                {'UserID: '}
-                {item.user_id}
-                {'\n'}
-                {'Name: '}
-                {item.first_name}
-                {' '}
-                {item.last_name}
-                {'\n'}
-                {'Email: '}
-                {item.email}
-                {'\n'}
-              </Text>
-              <TouchableOpacity
+            <ListItem bottomDivider>
+              <ListItem.Content>
+                <ListItem.Title>
+                  {'UserID: '}
+                  {item.user_id}
+                </ListItem.Title>
+                <ListItem.Subtitle>
+                  {'Name: '}
+                  {item.first_name}
+                  {' '}
+                  {item.last_name}
+                </ListItem.Subtitle>
+                <ListItem.Subtitle>
+                  {'Email: '}
+                  {item.email}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <Icon
+                name="lock"
+                type="material-community"
+                color="#ff0000"
                 onPress={() => this.blockContact(item.user_id)}
-                style={styles.icon}
-              >
-                <Icon name="lock" type="material-community" color="#ff0000" />
-              </TouchableOpacity>
-              <TouchableOpacity
+              />
+              <Icon
+                name="close"
+                type="material-community"
+                color="#ff0000"
                 onPress={() => this.deleteContact(item.user_id)}
-                style={styles.icon}
-              >
-                <Icon name="close" type="material-community" color="#ff0000" />
-              </TouchableOpacity>
-            </View>
+              />
+            </ListItem>
           )}
         />
 
@@ -357,34 +379,36 @@ class Contacts extends Component {
           data={blockedContacts}
           keyExtractor={(item) => item.user_id}
           renderItem={({ item }) => (
-            <View key={item.user_id} style={styles.item}>
-              <Text style={styles.itemText}>
-                {'\n'}
-                {'UserID: '}
-                {item.user_id}
-                {'\n'}
-                {'Name: '}
-                {item.first_name}
-                {' '}
-                {item.last_name}
-                {'\n'}
-                {'Email: '}
-                {item.email}
-                {'\n'}
-              </Text>
-              <TouchableOpacity
+            <ListItem bottomDivider>
+              <ListItem.Content>
+                <ListItem.Title>
+                  {'UserID: '}
+                  {item.user_id}
+                </ListItem.Title>
+                <ListItem.Subtitle>
+                  {'Name: '}
+                  {item.first_name}
+                  {' '}
+                  {item.last_name}
+                </ListItem.Subtitle>
+                <ListItem.Subtitle>
+                  {'Email: '}
+                  {item.email}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <Icon
+                name="lock-open"
+                type="material-community"
+                color="#00FF00"
                 onPress={() => this.unblockContact(item.user_id)}
-                style={styles.icon}
-              >
-                <Icon name="lock-open" type="material-community" color="#008000" />
-              </TouchableOpacity>
-              <TouchableOpacity
+              />
+              <Icon
+                name="close"
+                type="material-community"
+                color="#ff0000"
                 onPress={() => this.deleteContact(item.user_id)}
-                style={styles.icon}
-              >
-                <Icon name="close" type="material-community" color="#ff0000" />
-              </TouchableOpacity>
-            </View>
+              />
+            </ListItem>
           )}
         />
       </View>
@@ -438,4 +462,5 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+
 });

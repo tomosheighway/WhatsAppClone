@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, TextInput, View, TouchableOpacity, StyleSheet,
+  Text, View,
 } from 'react-native';
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 import { Input, Button } from 'react-native-elements';
