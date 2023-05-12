@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as EmailValidator from 'email-validator';
 import {
-  View, Text, TouchableOpacity, FlatList, StyleSheet,
+  View, Text, TouchableOpacity, FlatList, Modal,
 } from 'react-native';
 import {
   Icon, Input, ListItem,
 } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
+import styles from '../styles/contactStyles';
 
 class Contacts extends Component {
   static navigationOptions = {
@@ -21,12 +22,17 @@ class Contacts extends Component {
       blockedContacts: [],
       email: '',
       errorMessage: '',
+      users: null,
+      modalVisible: false,
     };
   }
 
   async componentDidMount() {
     const contacts = await this.getContacts();
     const blockedContacts = await this.getBlockedContacts();
+    this.getUsers().then((users) => {
+      this.setState({ users });
+    });
     if (contacts) {
       this.setState({ contacts });
     }
@@ -68,6 +74,41 @@ class Contacts extends Component {
       console.log('User not found');
     }
   };
+
+  async getUsers() {
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+
+    return fetch('http://localhost:3333/api/1.0.0/search', {
+      method: 'GET',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log(data);
+          return data;
+        }
+        if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+          return null;
+        }
+        if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  }
 
   async getUsersId(email) {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
@@ -280,7 +321,7 @@ class Contacts extends Component {
 
   async addUserAsContact(userId) {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-
+    this.setState({ modalVisible: false });
     return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/contact`, {
       method: 'Post',
       headers: {
@@ -292,6 +333,7 @@ class Contacts extends Component {
       .then(async (response) => {
         if (response.status === 200) {
           console.log('Contact Added successfully');
+          this.setState({ errorMessage: 'Contact Added successfully' });
           const contacts = await this.getContacts();
           const blockedContacts = await this.getBlockedContacts();
           if (contacts && blockedContacts) {
@@ -316,13 +358,17 @@ class Contacts extends Component {
   }
 
   render() {
-    const { contacts, blockedContacts, errorMessage } = this.state;
+    const {
+      contacts, blockedContacts, errorMessage,
+      users, modalVisible,
+    } = this.state;
     return (
+
       <View style={styles.container}>
         {errorMessage ? <Text>{errorMessage}</Text> : null}
-        <Toast
-          ref={(ref) => Toast.setRef(ref)}
-        />
+        {/* <Toast
+        ref={(ref) => Toast.setRef(ref)}
+      /> */}
         <Text style={styles.header}>Enter the email of a contact you wish to add</Text>
         <View style={styles.inputContainer}>
 
@@ -335,6 +381,36 @@ class Contacts extends Component {
             <Text style={styles.addButtonText}>Add</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
+          <Text>Or click to explore existing users</Text>
+        </TouchableOpacity>
+        {/* still need to style this modal --------------------------------- */}
+        <Modal visible={modalVisible} animationType="slide">
+          <View style={{ flex: 1 }}>
+            <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
+              <Text>Close</Text>
+            </TouchableOpacity>
+            <FlatList
+              data={users}
+              keyExtractor={(item) => item.user_id}
+              renderItem={({ item }) => (
+                <ListItem bottomDivider>
+                  <ListItem.Content>
+                    <ListItem.Title>
+                      {item.given_name}
+                      {' '}
+                      {item.family_name}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                  <TouchableOpacity onPress={() => this.addUserAsContact(item.user_id)}>
+                    <Text>Add as Contact</Text>
+                  </TouchableOpacity>
+
+                </ListItem>
+              )}
+            />
+          </View>
+        </Modal>
 
         <Text style={styles.header}>Your contacts</Text>
         <FlatList
@@ -417,50 +493,3 @@ class Contacts extends Component {
 }
 
 export default Contacts;
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#ffffff',
-  },
-  header: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 5,
-    textAlign: 'center',
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemText: {
-    flex: 1,
-  },
-  icon: {
-    padding: 5,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  inputLabel: {
-    flex: 1,
-    marginRight: 8,
-  },
-  input: {
-    flex: 2,
-  },
-  addButton: {
-    backgroundColor: 'green',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 4,
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-
-});
