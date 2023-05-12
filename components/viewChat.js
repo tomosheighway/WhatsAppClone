@@ -204,6 +204,16 @@ class ViewChats extends Component {
     this.flatListRef.current.scrollToEnd({ animated: true });
   };
 
+  handleSaveDraft = async () => {
+    const { newMessage } = this.state;
+    try {
+      await AsyncStorage.setItem('draftMessage', newMessage);
+      this.setState({ errorMessage: 'Message saved to drafts' });
+    } catch (error) {
+      this.setState({ errorMessage: 'Something went wrong' });
+    }
+  };
+
   async viewChat() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
@@ -473,6 +483,14 @@ class ViewChats extends Component {
               }}
             >
               <Text style={{ color: '#fff', fontWeight: 'bold' }}>Send</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#67c5f5', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10,
+              }}
+              onPress={this.handleSaveDraft}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Save</Text>
             </TouchableOpacity>
           </View>
         </View>
