@@ -39,7 +39,11 @@ export default StyleSheet.create({
   chatNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    paddingRight: 10,
+  },
+  changeNameContainer: {
+    justifyContent: 'flex-end',
   },
   chatName: {
     fontSize: 18,
@@ -73,12 +77,24 @@ export default StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 5,
   },
-  // buttonContainer: {
-  //   padding: 10,
-  //   backgroundColor: '#337ab7',
-  //   borderRadius: 5,
-  //   marginBottom: 10,
-  // },
+  leftButtonContainer2: {
+    backgroundColor: '#337ab7',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  membersButtonContainer: {
+    backgroundColor: '#ad1010',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  buttonContainer: {
+    backgroundColor: '#337ab7',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
   buttonText: {
     color: '#fff',
     textAlign: 'center',
@@ -91,13 +107,6 @@ export default StyleSheet.create({
   membersContainer: {
     flex: 1,
     paddingHorizontal: 10,
-  },
-  membersButtonContainer: {
-    backgroundColor: '#007AFF',
-    paddingTop: 20,
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 5,
   },
   background: {
     flex: 1,
@@ -142,5 +151,12 @@ export default StyleSheet.create({
     color: '#007AFF',
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  modalMemberContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    width: '80%',
+    maxHeight: '80%',
   },
 });

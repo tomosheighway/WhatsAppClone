@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import { Icon } from 'react-native-elements';
 import styles from '../styles/chatStyles';
 
 class ViewChats extends Component {
@@ -26,6 +27,7 @@ class ViewChats extends Component {
       userId: '',
       editMessageId: null,
       isModalVisible: false,
+      isMembersModalVisible: false,
     };
   }
 
@@ -33,6 +35,10 @@ class ViewChats extends Component {
     const {
       route: { params: { data } },
     } = this.props;
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
+      this.handleNewMessageAdded();
+    });
     this.setState({
       chatId: data,
     }, async () => {
@@ -42,6 +48,7 @@ class ViewChats extends Component {
   }
 
   componentWillUnmount() {
+    this.unsubscribe();
     clearInterval(this.intervalId);
   }
 
@@ -253,6 +260,7 @@ class ViewChats extends Component {
       editMessageId,
       updatedMessage,
       isModalVisible,
+      isMembersModalVisible,
     } = this.state;
     const messageList = messages.slice().reverse();
     const { navigation } = this.props;
@@ -289,16 +297,50 @@ class ViewChats extends Component {
 
         <View style={styles.chatNameContainer}>
           <Text style={styles.title}>{chatName}</Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.setState({ isModalVisible: true })}
-          >
-            <Text style={styles.buttonText}>Update Chat Name</Text>
-          </TouchableOpacity>
+          <View style={styles.changeNameContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => this.setState({ isModalVisible: true })}
+            >
+              <Text style={styles.buttonText}>Update Chat Name</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Members</Text>
-        <FlatList
+        <Modal
+          visible={isMembersModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => this.setState({ isMembersModalVisible: false })}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalMemberContent}>
+              <Text style={styles.modalTitle}>Members</Text>
+              <FlatList
+                data={members}
+                renderItem={({ item }) => (
+                  <Text key={item.user_id} style={styles.member}>
+                    {item.first_name}
+                    {' '}
+                    {item.last_name}
+                  </Text>
+                )}
+              />
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => this.setState({ isMembersModalVisible: false })}
+              >
+                <Text style={styles.cancelButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        <Text style={styles.sectionTitle}>
+          Members (
+          {members.length}
+          )
+        </Text>
+        {/* <FlatList
           style={styles.scroll}
           data={members}
           renderItem={({ item }) => (
@@ -308,8 +350,15 @@ class ViewChats extends Component {
               {item.last_name}
             </Text>
           )}
-        />
+        /> */}
         <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.leftButtonContainer2}
+            onPress={() => this.setState({ isMembersModalVisible: true })}
+          >
+            <Text style={styles.buttonText}>View Members</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.leftButtonContainer}
             onPress={() => navigation.navigate('AddToChat', { data: chatId, viewChat: this.viewChat.bind(this) })}
@@ -373,28 +422,27 @@ class ViewChats extends Component {
                           onPress={() => this.handleUpdateMessage(message.message_id)}
                           style={{ position: 'absolute', top: 5, right: 50 }}
                         >
-                          <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }}>
-                            Save
-                          </Text>
+                          <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }} />
                         </TouchableOpacity>
                       ) : (
-                        <TouchableOpacity
+                        <Icon
+                          name="edit"
+                          type="font-awesome"
                           onPress={() => this.setState({ editMessageId: message.message_id })}
-                          style={{ position: 'absolute', top: -70, right: 50 }}
-                        >
-                          <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }}>
-                            Edit
-                          </Text>
-                        </TouchableOpacity>
+                          containerStyle={{ position: 'absolute', top: -65, right: 30 }}
+                          size={20}
+                          color="blue"
+                        />
                       )}
-                      <TouchableOpacity
+
+                      <Icon
+                        name="close"
+                        type="material-community"
                         onPress={() => this.handleDeleteMessage(message.message_id)}
-                        style={{ position: 'absolute', top: -70, right: 10 }}
-                      >
-                        <Text style={{ color: 'red', fontSize: 20, fontWeight: 'bold' }}>
-                          X
-                        </Text>
-                      </TouchableOpacity>
+                        containerStyle={{ position: 'absolute', top: -65, right: 5 }}
+                        size={20}
+                        color="red"
+                      />
                     </View>
                     )}
 

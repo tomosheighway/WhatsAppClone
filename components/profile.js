@@ -15,24 +15,29 @@ class Profile extends Component {
     super(props);
     this.state = {
       errorMessage: '',
+      loading: true,
     };
   }
 
   async componentDidMount() {
-    const userInfo = await this.getUserInfo();
-    const { navigation } = this.props;
-    this.unsubscribe = navigation.addListener('focus', () => {
-      this.checkLoggedIn();
-      this.updateUserDetails();
-    });
-    if (userInfo) {
-      console.log(userInfo);
-      const sessionToken = await AsyncStorage.getItem('sessionToken');
-      const userId = await AsyncStorage.getItem('userId');
-      const photo = await this.getPhoto(userId, sessionToken);
-      this.setState({ userInfo, photo });
-    } else {
-      this.setState({ errorMessage: 'Something went wrong' });
+    try {
+      const userInfo = await this.getUserInfo();
+      const { navigation } = this.props;
+      this.unsubscribe = navigation.addListener('focus', () => {
+        this.checkLoggedIn();
+        this.updateUserDetails();
+      });
+      if (userInfo) {
+        console.log(userInfo);
+        const sessionToken = await AsyncStorage.getItem('sessionToken');
+        const userId = await AsyncStorage.getItem('userId');
+        const photo = await this.getPhoto(userId, sessionToken);
+        this.setState({ userInfo, photo, loading: false }); // set loading state to false
+      } else {
+        this.setState({ errorMessage: 'Something went wrong', loading: false }); // set loading state to false
+      }
+    } catch (error) {
+      this.setState({ errorMessage: error.message, loading: false }); // set loading state to false
     }
   }
 
@@ -166,10 +171,17 @@ class Profile extends Component {
 
   render() {
     const {
-      userInfo, errorMessage, photo,
+      userInfo, errorMessage, photo, loading,
     } = this.state;
     const { navigation } = this.props;
 
+    if (loading) {
+      return (
+        <View style={styles.container}>
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.photoContainer}>

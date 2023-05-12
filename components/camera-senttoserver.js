@@ -1,11 +1,33 @@
 import {
   Camera, CameraType,
 } from 'expo-camera';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import {
   Text, TouchableOpacity, View, StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  buttonContainer: {
+    alignSelf: 'flex-end',
+    padding: 5,
+    margin: 5,
+    backgroundColor: 'steelblue',
+  },
+  button: {
+    width: '100%',
+    height: '100%',
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ddd',
+  },
+});
 
 export default function CameraSendToServer({ navigation }) {
   const [type, setType] = useState(CameraType.back);
@@ -67,6 +89,7 @@ export default function CameraSendToServer({ navigation }) {
   if (!permission || !permission.granted) {
     return (<Text>No access to camera</Text>);
   }
+
   return (
     <View style={styles.container}>
       <Camera style={styles.camera} type={type} ref={(ref) => setCamera(ref)}>
@@ -85,24 +108,3 @@ export default function CameraSendToServer({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  buttonContainer: {
-    alignSelf: 'flex-end',
-    padding: 5,
-    margin: 5,
-    backgroundColor: 'steelblue',
-  },
-  button: {
-    width: '100%',
-    height: '100%',
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#ddd',
-  },
-});
