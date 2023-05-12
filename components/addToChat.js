@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
+
 import { ListItem } from 'react-native-elements';
 
 class AddToChat extends Component {
@@ -86,19 +86,6 @@ class AddToChat extends Component {
       if (response.status === 200) {
         console.log('User added to the chat ');
         this.setState({ errorMessage: 'User added' });
-        Toast.show({
-          type: 'success',
-          text1: 'User added to the chat',
-          visibilityTime: 6000,
-          style: {
-            backgroundColor: 'black',
-            borderRadius: 10,
-            zIndex: 9999, // Add this line
-          },
-          text1Style: {
-            color: 'white',
-          },
-        });
         viewChat();
         // await this.viewChat();
       } else if (response.status === 400) {
@@ -124,8 +111,6 @@ class AddToChat extends Component {
     const { errorMessage, contacts } = this.state;
     return (
       <View>
-
-        <Toast ref={(ref) => Toast.setRef(ref)} />
 
         {errorMessage ? (
           <View style={{ backgroundColor: 'red', padding: 10 }}>
