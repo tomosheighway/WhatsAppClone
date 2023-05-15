@@ -23,11 +23,13 @@ class ViewChats extends Component {
       updatedChatName: '',
       members: [],
       messages: [],
+      draftMessages: [],
       newMessage: '',
       userId: '',
       editMessageId: null,
       isModalVisible: false,
       isMembersModalVisible: false,
+      isDraftModalVisable: false,
     };
   }
 
@@ -39,6 +41,7 @@ class ViewChats extends Component {
     this.unsubscribe = navigation.addListener('focus', () => {
       this.handleNewMessageAdded();
     });
+    this.retrieveDraftMessages();
     this.setState({
       chatId: data,
     }, async () => {
@@ -206,12 +209,43 @@ class ViewChats extends Component {
 
   handleSaveDraft = async () => {
     const { newMessage } = this.state;
+    if (newMessage.trim() === '') {
+      this.setState({ errorMessage: 'Message cannot be blank' });
+      return;
+    }
     try {
-      await AsyncStorage.setItem('draftMessage', newMessage);
-      this.setState({ errorMessage: 'Message saved to drafts' });
+      const savedMessages = await AsyncStorage.getItem('draftMessages');
+      let draftMessages = [];
+      if (savedMessages) {
+        draftMessages = JSON.parse(savedMessages);
+      }
+      draftMessages.push(newMessage);
+      await AsyncStorage.setItem('draftMessages', JSON.stringify(draftMessages));
+      this.setState({ errorMessage: 'Message saved to drafts', newMessage: '' });
+      this.retrieveDraftMessages();
     } catch (error) {
       this.setState({ errorMessage: 'Something went wrong' });
     }
+  };
+
+  retrieveDraftMessages = async () => {
+    try {
+      const savedMessages = await AsyncStorage.getItem('draftMessages');
+      if (savedMessages) {
+        const draftMessages = JSON.parse(savedMessages);
+        this.setState({ draftMessages });
+      } else {
+        this.setState({ draftMessages: [] });
+      }
+    } catch (error) {
+      console.error('Error retrieving draft messages:', error);
+    }
+  };
+
+  handleSendDraftMessage = async (message) => {
+    this.setState({ isDraftModalVisable: false, newMessage: message });
+    await this.handleNewMessage();
+    this.handleNewMessageAdded();
   };
 
   async viewChat() {
@@ -263,6 +297,7 @@ class ViewChats extends Component {
       chatName,
       members,
       messages,
+      draftMessages,
       newMessage,
       updatedChatName,
       chatId,
@@ -271,6 +306,7 @@ class ViewChats extends Component {
       updatedMessage,
       isModalVisible,
       isMembersModalVisible,
+      isDraftModalVisable,
     } = this.state;
     const messageList = messages.slice().reverse();
     const { navigation } = this.props;
@@ -345,6 +381,38 @@ class ViewChats extends Component {
             </View>
           </View>
         </Modal>
+
+        <Modal
+          visible={isDraftModalVisable}
+          animationType="slide"
+          transparent
+          onRequestClose={() => this.setState({ isDraftModalVisable: false })}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalMemberContent}>
+              <Text style={styles.modalTitle}>Draft Messages</Text>
+              {draftMessages.map((message) => (
+                <View key={message.id} style={styles.draftContainer}>
+                  <Text style={styles.messageText}>{message}</Text>
+                  <TouchableOpacity
+                    style={styles.sendButton}
+                    onPress={() => this.handleSendDraftMessage(message)}
+                  >
+                    <Text style={styles.sendButtonText}>Send</Text>
+                  </TouchableOpacity>
+                </View>
+
+              ))}
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => this.setState({ isDraftModalVisable: false })}
+              >
+                <Text style={styles.cancelButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <Text style={styles.sectionTitle}>
           Members (
           {members.length}
@@ -381,6 +449,13 @@ class ViewChats extends Component {
             onPress={() => navigation.navigate('RemoveFromChat', { chatId, members, viewChat: this.viewChat.bind(this) })}
           >
             <Text style={styles.buttonText}>Remove</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.leftButtonContainer2}
+            onPress={() => this.setState({ isDraftModalVisable: true })}
+          >
+            <Text style={styles.buttonText}>Drafts</Text>
           </TouchableOpacity>
         </View>
 
