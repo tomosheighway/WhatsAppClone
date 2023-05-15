@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet,
+  View, Text, FlatList, TouchableOpacity,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import styles from '../styles/chatStyles';
+
 import {
   ListItem, Input,
 } from 'react-native-elements';
+import styles from '../styles/chatStyles';
 
 class Chats extends Component {
   static navigationOptions = {
@@ -103,6 +104,7 @@ class Chats extends Component {
         } else {
           throw new Error('Something went wrong');
         }
+        return null;
       })
       .catch((error) => {
         console.error(error);
@@ -119,14 +121,14 @@ class Chats extends Component {
       <View style={styles.background}>
         <View style={styles.container}>
 
-          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+          {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
           <Input
             placeholder="Enter a new chat name"
             value={this.newChatName}
             onChangeText={(text) => this.setState({ newChatName: text })}
           />
-          <TouchableOpacity style={styles.button} onPress={this.createNewChat}>
-            <Text style={styles.buttonText}>Create New Chat</Text>
+          <TouchableOpacity style={styles.createButton} onPress={this.createNewChat}>
+            <Text style={styles.createButtonText}>Create New Chat</Text>
           </TouchableOpacity>
           <FlatList
             data={reversedChats}
@@ -174,57 +176,57 @@ class Chats extends Component {
 
 export default Chats;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#ffffff',
-  },
-  background: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    padding: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 8,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 8,
-    paddingHorizontal: 8,
-  },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 4,
-    marginBottom: 16,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  chatItem: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
-  },
-  chatId: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  chatName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//     backgroundColor: '#ffffff',
+//   },
+//   background: {
+//     flex: 1,
+//     backgroundColor: 'lightblue',
+//     padding: 10,
+//   },
+//   title: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//     marginBottom: 8,
+//   },
+//   error: {
+//     color: 'red',
+//     marginBottom: 8,
+//   },
+//   input: {
+//     height: 40,
+//     borderColor: 'gray',
+//     borderWidth: 1,
+//     marginBottom: 8,
+//     paddingHorizontal: 8,
+//   },
+//   createButton: {
+//     backgroundColor: '#007bff',
+//     paddingVertical: 10,
+//     paddingHorizontal: 16,
+//     borderRadius: 4,
+//     marginBottom: 16,
+//   },
+//   createButtonText: {
+//     color: '#ffffff',
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//   },
+//   chatItem: {
+//     paddingVertical: 8,
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#cccccc',
+//   },
+//   chatId: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//   },
+//   chatName: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//   },
+// });

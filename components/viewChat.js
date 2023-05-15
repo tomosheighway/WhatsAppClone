@@ -4,7 +4,6 @@ import {
   Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
 import { Icon } from 'react-native-elements';
 import styles from '../styles/chatStyles';
 
@@ -153,12 +152,6 @@ class ViewChats extends Component {
         },
         body: JSON.stringify(body),
       });
-      Toast.show({
-        type: 'success',
-        text1: 'Message sent',
-        visibilityTime: 6000,
-      });
-
       console.log('Message Sent');
       await this.viewChat();
       this.handleNewMessageAdded();
@@ -185,7 +178,7 @@ class ViewChats extends Component {
         },
       });
       if (response.status === 200) {
-        console.log('Message deleted');
+        this.setState({ errorMessage: 'Message Deleted' });
         await this.viewChat();
       } else if (response.status === 401) {
         const { navigation } = this.props;
@@ -253,6 +246,7 @@ class ViewChats extends Component {
     const userId = await AsyncStorage.getItem('userId');
     this.setState({ userId });
     const { chatId } = this.state;
+    const { navigation } = this.props;
     return fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}`, {
       method: 'GET',
       headers: {
@@ -273,7 +267,6 @@ class ViewChats extends Component {
           return data;
         }
         if (response.status === 401) {
-          const { navigation } = this.props;
           console.log('Unauthorized error');
           navigation.navigate('Login');
           return null;
@@ -281,6 +274,7 @@ class ViewChats extends Component {
         if (response.status === 500) {
           throw new Error('Server Error');
         } else {
+          navigation.navigate('Chats');
           this.setState({ errorMessage: 'Something went wrong' });
           throw new Error('Something went wrong');
         }
@@ -313,11 +307,7 @@ class ViewChats extends Component {
     return (
       <View style={styles.background}>
         <View style={styles.container}>
-          {errorMessage ? <Text>{errorMessage}</Text> : null}
-          <Toast
-            ref={(ref) => Toast.setRef(ref)}
-          />
-          {/* make this a popup thing  */}
+          {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
 
           <Modal visible={isModalVisible} animationType="slide" transparent>
             <View style={styles.modalContainer}>

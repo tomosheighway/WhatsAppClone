@@ -10,8 +10,8 @@ export default function ProfileNav() {
   return (
     <Stack.Navigator initialRouteName="Profile">
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
-      <Stack.Screen name="CameraScreen" component={CameraScreen} />
+      <Stack.Screen name="UpdateProfile" options={{ title: 'Update Your Details' }} component={UpdateProfile} />
+      <Stack.Screen name="CameraScreen" options={{ title: 'Camera' }} component={CameraScreen} />
     </Stack.Navigator>
   );
 }

@@ -11,6 +11,12 @@ export default StyleSheet.create({
     backgroundColor: 'lightblue',
     padding: 10,
   },
+  errorMessage: {
+    backgroundColor: 'lightblue',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
   header: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -19,7 +25,7 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   header2: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
   },

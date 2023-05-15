@@ -7,7 +7,6 @@ import {
 import {
   Icon, Input, ListItem,
 } from 'react-native-elements';
-import Toast from 'react-native-toast-message';
 import styles from '../styles/contactStyles';
 
 class Contacts extends Component {
@@ -56,20 +55,6 @@ class Contacts extends Component {
       console.log(`User ID: ${userId}`);
       await this.addUserAsContact(userId);
     } else {
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Contact couldnt be found',
-        style: {
-          backgroundColor: '#000000',
-        },
-        text1Style: {
-          color: '#FFFFFF',
-        },
-        text2Style: {
-          color: '#FFFFFF',
-        },
-      });
       this.setState({ errorMessage: 'That email address couldnt be linked with a user of this app' });
       console.log('User not found');
     }
@@ -230,7 +215,7 @@ class Contacts extends Component {
     })
       .then(async (response) => {
         if (response.status === 200) {
-          console.log('Contact blocked successfully');
+          this.setState({ errorMessage: 'Contact blocked successfully' });
           const contacts = await this.getContacts();
           const blockedContacts = await this.getBlockedContacts();
           if (contacts && blockedContacts) {
@@ -243,6 +228,7 @@ class Contacts extends Component {
         } else if (response.status === 500) {
           throw new Error('Server Error');
         } else if (response.status === 400) {
+          this.setState({ errorMessage: 'You cant block yourself' });
           throw new Error('You cant block yourself');
         } else {
           throw new Error('Something went wrong');
@@ -265,7 +251,7 @@ class Contacts extends Component {
     })
       .then(async (response) => {
         if (response.status === 200) {
-          console.log('Contact unblocked successfully');
+          this.setState({ errorMessage: 'Contact unblocked successfully' });
           const contacts = await this.getContacts();
           const blockedContacts = await this.getBlockedContacts();
           if (contacts && blockedContacts) {
@@ -278,6 +264,7 @@ class Contacts extends Component {
         } else if (response.status === 500) {
           throw new Error('Server Error');
         } else {
+          this.setState({ errorMessage: 'Unable to unblocked contact' });
           throw new Error('Something went wrong');
         }
       })
@@ -298,7 +285,7 @@ class Contacts extends Component {
     })
       .then(async (response) => {
         if (response.status === 200) {
-          console.log('Contact deleted successfully');
+          this.setState({ errorMessage: 'Contact deleted successfully' });
           const contacts = await this.getContacts();
           const blockedContacts = await this.getBlockedContacts();
           if (contacts && blockedContacts) {
@@ -311,6 +298,7 @@ class Contacts extends Component {
         } else if (response.status === 500) {
           throw new Error('Server Error');
         } else {
+          this.setState({ errorMessage: 'Unable to delete contact' });
           throw new Error('Something went wrong');
         }
       })
@@ -365,10 +353,7 @@ class Contacts extends Component {
     return (
       <View style={styles.background}>
         <View style={styles.container}>
-          {errorMessage ? <Text>{errorMessage}</Text> : null}
-          {/* <Toast
-        ref={(ref) => Toast.setRef(ref)}
-      /> */}
+          {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
           <Text style={styles.header}>Enter the email of a contact you wish to add</Text>
           <View style={styles.inputContainer}>
 

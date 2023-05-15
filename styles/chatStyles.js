@@ -21,6 +21,13 @@ export default StyleSheet.create({
     maxHeight: 560,
     padding: 10,
   },
+  errorMessage: {
+    backgroundColor: 'lightblue',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 5,
+
+  },
   textInput: {
     flex: 1,
     height: 40,
@@ -179,4 +186,37 @@ export default StyleSheet.create({
   sendButton: {
     textAlign: 'right',
   },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 8,
+    paddingHorizontal: 8,
+  },
+  createButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginBottom: 16,
+  },
+  createButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  chatItem: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
+  },
+  chatId: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  // chatName: {
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  // },
 });

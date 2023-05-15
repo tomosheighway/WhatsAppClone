@@ -3,8 +3,8 @@ import {
   View, Text, TouchableOpacity, FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { ListItem } from 'react-native-elements';
+import styles from '../styles/chatStyles';
 
 class AddToChat extends Component {
   static navigationOptions = {
@@ -112,19 +112,7 @@ class AddToChat extends Component {
     return (
       <View>
 
-        {errorMessage ? (
-          <View style={{ backgroundColor: 'red', padding: 10 }}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>
-              {errorMessage}
-            </Text>
-          </View>
-        ) : (
-          <View style={{ padding: 10 }}>
-            {/* <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-              Select a user to add to the chat
-            </Text> */}
-          </View>
-        )}
+        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
         <FlatList
           data={contacts}
           keyExtractor={(contact) => contact.user_id.toString()}
