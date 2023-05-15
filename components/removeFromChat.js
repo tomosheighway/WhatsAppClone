@@ -80,38 +80,40 @@ class RemoveFromChat extends Component {
     const { errorMessage, members } = this.state;
     return (
       <View>
-        {errorMessage ? (
-          <View style={{ backgroundColor: 'red', padding: 10 }}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>
-              {errorMessage}
-            </Text>
-          </View>
-        ) : (
-          <View style={{ padding: 10 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+        <View>
+          {errorMessage ? (
+            <View style={{ backgroundColor: 'red', padding: 10 }}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                {errorMessage}
+              </Text>
+            </View>
+          ) : (
+            <View style={{ padding: 10 }}>
+              {/* <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
               Select a user to remove from the chat
-            </Text>
-          </View>
-        )}
-        <FlatList
-          data={members}
-          keyExtractor={(member) => member.user_id.toString()}
-          renderItem={({ item: member }) => (
-            <ListItem bottomDivider>
-              <ListItem.Content>
-                <ListItem.Title>
-                  {member.first_name}
-                  {' '}
-                  {member.last_name}
-                </ListItem.Title>
-                <ListItem.Subtitle>{member.email}</ListItem.Subtitle>
-              </ListItem.Content>
-              <TouchableOpacity onPress={() => this.handleRemoveUserFromChat(member.user_id)}>
-                <Text>Delete user</Text>
-              </TouchableOpacity>
-            </ListItem>
+            </Text> */}
+            </View>
           )}
-        />
+          <FlatList
+            data={members}
+            keyExtractor={(member) => member.user_id.toString()}
+            renderItem={({ item: member }) => (
+              <ListItem bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title>
+                    {member.first_name}
+                    {' '}
+                    {member.last_name}
+                  </ListItem.Title>
+                  <ListItem.Subtitle>{member.email}</ListItem.Subtitle>
+                </ListItem.Content>
+                <TouchableOpacity onPress={() => this.handleRemoveUserFromChat(member.user_id)}>
+                  <Text>Remove user</Text>
+                </TouchableOpacity>
+              </ListItem>
+            )}
+          />
+        </View>
       </View>
     );
   }

@@ -363,130 +363,131 @@ class Contacts extends Component {
       users, modalVisible,
     } = this.state;
     return (
-
-      <View style={styles.container}>
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
-        {/* <Toast
+      <View style={styles.background}>
+        <View style={styles.container}>
+          {errorMessage ? <Text>{errorMessage}</Text> : null}
+          {/* <Toast
         ref={(ref) => Toast.setRef(ref)}
       /> */}
-        <Text style={styles.header}>Enter the email of a contact you wish to add</Text>
-        <View style={styles.inputContainer}>
+          <Text style={styles.header}>Enter the email of a contact you wish to add</Text>
+          <View style={styles.inputContainer}>
 
-          <Input
-            containerStyle={styles.input}
-            placeholder="Email...."
-            onChangeText={(text) => this.setState({ email: text })}
-          />
-          <TouchableOpacity style={styles.addButton} onPress={this.handleAddContact}>
-            <Text style={styles.addButtonText}>Add</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
-          <Text>Or click to explore existing users</Text>
-        </TouchableOpacity>
-        {/* still need to style this modal --------------------------------- */}
-        <Modal visible={modalVisible} animationType="slide">
-          <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-            <FlatList
-              data={users}
-              keyExtractor={(item) => item.user_id}
-              renderItem={({ item }) => (
-                <ListItem bottomDivider>
-                  <ListItem.Content>
-                    <ListItem.Title>
-                      {item.given_name}
-                      {' '}
-                      {item.family_name}
-                    </ListItem.Title>
-                  </ListItem.Content>
-                  <TouchableOpacity onPress={() => this.addUserAsContact(item.user_id)}>
-                    <Text>Add as Contact</Text>
-                  </TouchableOpacity>
-
-                </ListItem>
-              )}
+            <Input
+              containerStyle={styles.input}
+              placeholder="Email...."
+              onChangeText={(text) => this.setState({ email: text })}
             />
+            <TouchableOpacity style={styles.addButton} onPress={this.handleAddContact}>
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+          <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
+            <Text style={styles.header2}>Or click to explore existing users</Text>
+          </TouchableOpacity>
 
-        <Text style={styles.header}>Your contacts</Text>
-        <FlatList
-          data={contacts}
-          keyExtractor={(item) => item.user_id}
-          renderItem={({ item }) => (
-            <ListItem bottomDivider>
-              <ListItem.Content>
-                <ListItem.Title>
+          <Modal visible={modalVisible} animationType="slide">
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
+                <Text style={styles.close}>Close</Text>
+              </TouchableOpacity>
+              <FlatList
+                data={users}
+                keyExtractor={(item) => item.user_id}
+                renderItem={({ item }) => (
+                  <ListItem bottomDivider>
+                    <ListItem.Content>
+                      <ListItem.Title>
+                        {item.given_name}
+                        {' '}
+                        {item.family_name}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                    <TouchableOpacity onPress={() => this.addUserAsContact(item.user_id)}>
+                      <Text>Add as Contact</Text>
+                    </TouchableOpacity>
+
+                  </ListItem>
+                )}
+              />
+            </View>
+          </Modal>
+
+          <Text style={styles.header}>Your contacts</Text>
+          <FlatList
+            data={contacts}
+            keyExtractor={(item) => item.user_id}
+            renderItem={({ item }) => (
+              <ListItem bottomDivider>
+                <ListItem.Content>
+                  {/* <ListItem.Title>
                   {'UserID: '}
                   {item.user_id}
-                </ListItem.Title>
-                <ListItem.Subtitle>
-                  {'Name: '}
-                  {item.first_name}
-                  {' '}
-                  {item.last_name}
-                </ListItem.Subtitle>
-                <ListItem.Subtitle>
-                  {'Email: '}
-                  {item.email}
-                </ListItem.Subtitle>
-              </ListItem.Content>
-              <Icon
-                name="lock"
-                type="material-community"
-                color="#ff0000"
-                onPress={() => this.blockContact(item.user_id)}
-              />
-              <Icon
-                name="close"
-                type="material-community"
-                color="#ff0000"
-                onPress={() => this.deleteContact(item.user_id)}
-              />
-            </ListItem>
-          )}
-        />
+                </ListItem.Title> */}
+                  <ListItem.Title>
+                    {'Name: '}
+                    {item.first_name}
+                    {' '}
+                    {item.last_name}
+                  </ListItem.Title>
+                  <ListItem.Subtitle>
+                    {'Email: '}
+                    {item.email}
+                  </ListItem.Subtitle>
+                </ListItem.Content>
+                <Icon
+                  name="lock"
+                  type="material-community"
+                  color="#ff0000"
+                  onPress={() => this.blockContact(item.user_id)}
+                />
+                <Icon
+                  name="close"
+                  type="material-community"
+                  color="#ff0000"
+                  onPress={() => this.deleteContact(item.user_id)}
+                />
+              </ListItem>
+            )}
+          />
 
-        <Text style={styles.header}>Blocked contacts</Text>
-        <FlatList
-          data={blockedContacts}
-          keyExtractor={(item) => item.user_id}
-          renderItem={({ item }) => (
-            <ListItem bottomDivider>
-              <ListItem.Content>
-                <ListItem.Title>
-                  {'UserID: '}
-                  {item.user_id}
-                </ListItem.Title>
-                <ListItem.Subtitle>
-                  {'Name: '}
-                  {item.first_name}
-                  {' '}
-                  {item.last_name}
-                </ListItem.Subtitle>
-                <ListItem.Subtitle>
-                  {'Email: '}
-                  {item.email}
-                </ListItem.Subtitle>
-              </ListItem.Content>
-              <Icon
-                name="lock-open"
-                type="material-community"
-                color="#00FF00"
-                onPress={() => this.unblockContact(item.user_id)}
-              />
-              <Icon
-                name="close"
-                type="material-community"
-                color="#ff0000"
-                onPress={() => this.deleteContact(item.user_id)}
-              />
-            </ListItem>
-          )}
-        />
+          <Text style={styles.header}>Blocked contacts</Text>
+          <FlatList
+            data={blockedContacts}
+            keyExtractor={(item) => item.user_id}
+            renderItem={({ item }) => (
+              <ListItem bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title>
+                    {'UserID: '}
+                    {item.user_id}
+                  </ListItem.Title>
+                  <ListItem.Subtitle>
+                    {'Name: '}
+                    {item.first_name}
+                    {' '}
+                    {item.last_name}
+                  </ListItem.Subtitle>
+                  <ListItem.Subtitle>
+                    {'Email: '}
+                    {item.email}
+                  </ListItem.Subtitle>
+                </ListItem.Content>
+                <Icon
+                  name="lock-open"
+                  type="material-community"
+                  color="#00FF00"
+                  onPress={() => this.unblockContact(item.user_id)}
+                />
+                <Icon
+                  name="close"
+                  type="material-community"
+                  color="#ff0000"
+                  onPress={() => this.deleteContact(item.user_id)}
+                />
+              </ListItem>
+            )}
+          />
+        </View>
       </View>
     );
   }

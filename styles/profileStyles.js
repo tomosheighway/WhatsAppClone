@@ -8,6 +8,11 @@ export default StyleSheet.create({
     backgroundColor: '#F5FCFF',
     paddingHorizontal: 20,
   },
+  background: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    padding: 10,
+  },
   photoContainer: {
     borderRadius: 100,
     overflow: 'hidden',

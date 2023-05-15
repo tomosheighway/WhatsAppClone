@@ -183,11 +183,12 @@ class Profile extends Component {
       );
     }
     return (
-      <View style={styles.container}>
-        <View style={styles.photoContainer}>
-          <Image source={{ uri: photo }} style={styles.photo} />
-        </View>
-        {userInfo && (
+      <View style={styles.background}>
+        <View style={styles.container}>
+          <View style={styles.photoContainer}>
+            <Image source={{ uri: photo }} style={styles.photo} />
+          </View>
+          {userInfo && (
           <View style={styles.detailsContainer}>
             <Text h4 style={styles.detailsTitle}>Your user details are shown below:</Text>
             <View style={styles.details}>
@@ -213,26 +214,27 @@ class Profile extends Component {
               </Text>
             </View>
           </View>
-        )}
-        <Button
-          title="Update User details"
-          containerStyle={{ marginVertical: 10 }}
-          onPress={() => navigation.navigate('UpdateProfile', { data: userInfo, updateUserDetails: this.updateUserDetails })}
-        />
-        <Button
-          title="Take a new profile photo"
-          containerStyle={{ marginVertical: 10 }}
-          onPress={() => navigation.navigate('CameraScreen', { updateUserDetails: this.updateUserDetails })}
-        />
-        <Button
-          title="Logout"
-          containerStyle={{ marginVertical: 10 }}
-          onPress={() => {
-            this.logout();
-            this.checkLoggedIn();
-          }}
-        />
-        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+          )}
+          <Button
+            title="Update User details"
+            containerStyle={{ marginVertical: 10 }}
+            onPress={() => navigation.navigate('UpdateProfile', { data: userInfo, updateUserDetails: this.updateUserDetails })}
+          />
+          <Button
+            title="Take a new profile photo"
+            containerStyle={{ marginVertical: 10 }}
+            onPress={() => navigation.navigate('CameraScreen', { updateUserDetails: this.updateUserDetails })}
+          />
+          <Button
+            title="Logout"
+            containerStyle={{ marginVertical: 10 }}
+            onPress={() => {
+              this.logout();
+              this.checkLoggedIn();
+            }}
+          />
+          {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+        </View>
       </View>
     );
   }

@@ -120,9 +120,9 @@ class AddToChat extends Component {
           </View>
         ) : (
           <View style={{ padding: 10 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+            {/* <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
               Select a user to add to the chat
-            </Text>
+            </Text> */}
           </View>
         )}
         <FlatList

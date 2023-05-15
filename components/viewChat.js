@@ -312,113 +312,114 @@ class ViewChats extends Component {
     const { navigation } = this.props;
     return (
       <View style={styles.background}>
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
-        <Toast
-          ref={(ref) => Toast.setRef(ref)}
-        />
-        {/* make this a popup thing  */}
+        <View style={styles.container}>
+          {errorMessage ? <Text>{errorMessage}</Text> : null}
+          <Toast
+            ref={(ref) => Toast.setRef(ref)}
+          />
+          {/* make this a popup thing  */}
 
-        <Modal visible={isModalVisible} animationType="slide" transparent>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Update Chat Name</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="Enter new chat name"
-                value={updatedChatName}
-                onChangeText={(text) => this.setState({ updatedChatName: text })}
-              />
-              <TouchableOpacity style={styles.saveButton} onPress={this.handleUpdateChatName}>
-                <Text style={styles.saveButtonText}>Update</Text>
-              </TouchableOpacity>
+          <Modal visible={isModalVisible} animationType="slide" transparent>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Update Chat Name</Text>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="Enter new chat name"
+                  value={updatedChatName}
+                  onChangeText={(text) => this.setState({ updatedChatName: text })}
+                />
+                <TouchableOpacity style={styles.saveButton} onPress={this.handleUpdateChatName}>
+                  <Text style={styles.saveButtonText}>Update</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => this.setState({ isModalVisible: false })}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
+          <View style={styles.chatNameContainer}>
+            <Text style={styles.title}>{chatName}</Text>
+            <View style={styles.changeNameContainer}>
               <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => this.setState({ isModalVisible: false })}
+                style={styles.button}
+                onPress={() => this.setState({ isModalVisible: true })}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.buttonText}>Update Chat Name</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
 
-        <View style={styles.chatNameContainer}>
-          <Text style={styles.title}>{chatName}</Text>
-          <View style={styles.changeNameContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => this.setState({ isModalVisible: true })}
-            >
-              <Text style={styles.buttonText}>Update Chat Name</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <Modal
-          visible={isMembersModalVisible}
-          animationType="slide"
-          transparent
-          onRequestClose={() => this.setState({ isMembersModalVisible: false })}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalMemberContent}>
-              <Text style={styles.modalTitle}>Members</Text>
-              <FlatList
-                data={members}
-                renderItem={({ item }) => (
-                  <Text key={item.user_id} style={styles.member}>
-                    {item.first_name}
-                    {' '}
-                    {item.last_name}
-                  </Text>
-                )}
-              />
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => this.setState({ isMembersModalVisible: false })}
-              >
-                <Text style={styles.cancelButtonText}>Close</Text>
-              </TouchableOpacity>
+          <Modal
+            visible={isMembersModalVisible}
+            animationType="slide"
+            transparent
+            onRequestClose={() => this.setState({ isMembersModalVisible: false })}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalMemberContent}>
+                <Text style={styles.modalTitle}>Members</Text>
+                <FlatList
+                  data={members}
+                  renderItem={({ item }) => (
+                    <Text key={item.user_id} style={styles.member}>
+                      {item.first_name}
+                      {' '}
+                      {item.last_name}
+                    </Text>
+                  )}
+                />
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => this.setState({ isMembersModalVisible: false })}
+                >
+                  <Text style={styles.cancelButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        <Modal
-          visible={isDraftModalVisable}
-          animationType="slide"
-          transparent
-          onRequestClose={() => this.setState({ isDraftModalVisable: false })}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalMemberContent}>
-              <Text style={styles.modalTitle}>Draft Messages</Text>
-              {draftMessages.map((message) => (
-                <View key={message.id} style={styles.draftContainer}>
-                  <Text style={styles.messageText}>{message}</Text>
-                  <TouchableOpacity
-                    style={styles.sendButton}
-                    onPress={() => this.handleSendDraftMessage(message)}
-                  >
-                    <Text style={styles.sendButtonText}>Send</Text>
-                  </TouchableOpacity>
-                </View>
+          <Modal
+            visible={isDraftModalVisable}
+            animationType="slide"
+            transparent
+            onRequestClose={() => this.setState({ isDraftModalVisable: false })}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalMemberContent}>
+                <Text style={styles.modalTitle}>Draft Messages</Text>
+                {draftMessages.map((message) => (
+                  <View key={message.id} style={styles.draftContainer}>
+                    <Text style={styles.messageText}>{message}</Text>
+                    <TouchableOpacity
+                      style={styles.sendButton}
+                      onPress={() => this.handleSendDraftMessage(message)}
+                    >
+                      <Text style={styles.sendButtonText}>Send</Text>
+                    </TouchableOpacity>
+                  </View>
 
-              ))}
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => this.setState({ isDraftModalVisable: false })}
-              >
-                <Text style={styles.cancelButtonText}>Close</Text>
-              </TouchableOpacity>
+                ))}
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => this.setState({ isDraftModalVisable: false })}
+                >
+                  <Text style={styles.cancelButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        <Text style={styles.sectionTitle}>
-          Members (
-          {members.length}
-          )
-        </Text>
-        {/* <FlatList
+          <Text style={styles.sectionTitle}>
+            Members (
+            {members.length}
+            )
+          </Text>
+          {/* <FlatList
           style={styles.scroll}
           data={members}
           renderItem={({ item }) => (
@@ -429,178 +430,179 @@ class ViewChats extends Component {
             </Text>
           )}
         /> */}
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={styles.leftButtonContainer2}
-            onPress={() => this.setState({ isMembersModalVisible: true })}
-          >
-            <Text style={styles.buttonText}>View Members</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.leftButtonContainer}
-            onPress={() => navigation.navigate('AddToChat', { data: chatId, viewChat: this.viewChat.bind(this) })}
-          >
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.rightButtonContainer}
-            onPress={() => navigation.navigate('RemoveFromChat', { chatId, members, viewChat: this.viewChat.bind(this) })}
-          >
-            <Text style={styles.buttonText}>Remove</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.leftButtonContainer2}
-            onPress={() => this.setState({ isDraftModalVisable: true })}
-          >
-            <Text style={styles.buttonText}>Drafts</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.sectionTitle}>Messages</Text>
-
-        <View style={{ flex: 1, maxHeight: 500 }}>
-
-          <FlatList
-            ref={this.flatListRef}
-            style={{ flex: 1, marginBottom: 60 }}
-            contentContainerStyle={styles.messageContainer}
-            data={messageList}
-            keyExtractor={(message) => message.message_id}
-            renderItem={({ item: message }) => {
-              const isSentByUser = userId === String(message.author.user_id);
-              const bubbleColor = isSentByUser ? '#09eb5c' : '#67c5f5';
-              const textAlign = isSentByUser ? 'left' : 'right';
-
-              return (
-                <View key={message.message_id}>
-                  <View
-                    style={{
-                      backgroundColor: bubbleColor,
-                      borderRadius: 20,
-                      padding: 10,
-                      marginLeft: isSentByUser ? 50 : 10,
-                      marginBottom: 10,
-                      marginRight: isSentByUser ? 10 : 50,
-                      alignSelf: textAlign,
-                      maxWidth: '80%',
-                    }}
-                  >
-                    <Text style={{ fontSize: 16 }}>
-                      {message.author.first_name}
-                      ,
-                      {' '}
-                      {message.author.last_name}
-                    </Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                      {message.message}
-                    </Text>
-                    <Text style={{ fontSize: 12, color: '#808080', textAlign: 'right' }}>
-                      {new Date(message.timestamp).toLocaleString()}
-                    </Text>
-                    {isSentByUser && (
-                    <View style={{ flexDirection: 'row' }}>
-                      {editMessageId === message.message_id ? (
-                        <TouchableOpacity
-                          onPress={() => this.handleUpdateMessage(message.message_id)}
-                          style={{ position: 'absolute', top: 5, right: 50 }}
-                        >
-                          <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }} />
-                        </TouchableOpacity>
-                      ) : (
-                        <Icon
-                          name="edit"
-                          type="font-awesome"
-                          onPress={() => this.setState({ editMessageId: message.message_id })}
-                          containerStyle={{ position: 'absolute', top: -65, right: 30 }}
-                          size={20}
-                          color="blue"
-                        />
-                      )}
-
-                      <Icon
-                        name="close"
-                        type="material-community"
-                        onPress={() => this.handleDeleteMessage(message.message_id)}
-                        containerStyle={{ position: 'absolute', top: -65, right: 5 }}
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                    )}
-
-                  </View>
-                </View>
-              );
-            }}
-            onContentSizeChange={() => this.flatListRef.current.scrollToEnd({ animated: true })}
-            onLayout={() => this.flatListRef.current.scrollToEnd({ animated: true })}
-          />
-
-          <View style={{
-            position: 'absolute', bottom: 2, left: 0, right: 0, padding: 10, backgroundColor: '', flexDirection: 'row',
-          }}
-          >
-            <TextInput
-              placeholder="Enter message"
-              value={newMessage}
-              onChangeText={(text) => this.setState({ newMessage: text })}
-              style={{
-                borderWidth: 1, borderColor: '#000', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, flex: 1, marginRight: 10,
-              }}
-            />
+          <View style={styles.buttonsContainer}>
             <TouchableOpacity
-              onPress={this.handleNewMessage}
-              style={{
-                backgroundColor: '#67c5f5', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10,
-              }}
+              style={styles.leftButtonContainer2}
+              onPress={() => this.setState({ isMembersModalVisible: true })}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Send</Text>
+              <Text style={styles.buttonText}>View Members</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
-              style={{
-                backgroundColor: '#67c5f5', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10,
-              }}
-              onPress={this.handleSaveDraft}
+              style={styles.leftButtonContainer}
+              onPress={() => navigation.navigate('AddToChat', { data: chatId, viewChat: this.viewChat.bind(this) })}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Save</Text>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rightButtonContainer}
+              onPress={() => navigation.navigate('RemoveFromChat', { chatId, members, viewChat: this.viewChat.bind(this) })}
+            >
+              <Text style={styles.buttonText}>Remove</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.leftButtonContainer2}
+              onPress={() => this.setState({ isDraftModalVisable: true })}
+            >
+              <Text style={styles.buttonText}>Drafts</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <Modal
-          visible={editMessageId !== null}
-          animationType="slide"
-          transparent
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Update a message</Text>
+
+          <Text style={styles.sectionTitle}>Messages</Text>
+
+          <View style={{ flex: 1, maxHeight: 500, backgroundColor: '#dedede' }}>
+
+            <FlatList
+              ref={this.flatListRef}
+              style={{ flex: 1, marginBottom: 60 }}
+              contentContainerStyle={styles.messageContainer}
+              data={messageList}
+              keyExtractor={(message) => message.message_id}
+              renderItem={({ item: message }) => {
+                const isSentByUser = userId === String(message.author.user_id);
+                const bubbleColor = isSentByUser ? '#09eb5c' : '#67c5f5';
+                const textAlign = isSentByUser ? 'left' : 'right';
+
+                return (
+                  <View key={message.message_id}>
+                    <View
+                      style={{
+                        backgroundColor: bubbleColor,
+                        borderRadius: 20,
+                        padding: 10,
+                        marginLeft: isSentByUser ? 50 : 10,
+                        marginBottom: 10,
+                        marginRight: isSentByUser ? 10 : 50,
+                        alignSelf: textAlign,
+                        maxWidth: '80%',
+                      }}
+                    >
+                      <Text style={{ fontSize: 16 }}>
+                        {message.author.first_name}
+                        ,
+                        {' '}
+                        {message.author.last_name}
+                      </Text>
+                      <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                        {message.message}
+                      </Text>
+                      <Text style={{ fontSize: 12, color: '#4d4d4d', textAlign: 'right' }}>
+                        {new Date(message.timestamp).toLocaleString()}
+                      </Text>
+                      {isSentByUser && (
+                      <View style={{ flexDirection: 'row' }}>
+                        {editMessageId === message.message_id ? (
+                          <TouchableOpacity
+                            onPress={() => this.handleUpdateMessage(message.message_id)}
+                            style={{ position: 'absolute', top: 5, right: 50 }}
+                          >
+                            <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }} />
+                          </TouchableOpacity>
+                        ) : (
+                          <Icon
+                            name="edit"
+                            type="font-awesome"
+                            onPress={() => this.setState({ editMessageId: message.message_id })}
+                            containerStyle={{ position: 'absolute', top: -65, right: 30 }}
+                            size={20}
+                            color="blue"
+                          />
+                        )}
+
+                        <Icon
+                          name="close"
+                          type="material-community"
+                          onPress={() => this.handleDeleteMessage(message.message_id)}
+                          containerStyle={{ position: 'absolute', top: -65, right: 5 }}
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                      )}
+
+                    </View>
+                  </View>
+                );
+              }}
+              onContentSizeChange={() => this.flatListRef.current.scrollToEnd({ animated: true })}
+              onLayout={() => this.flatListRef.current.scrollToEnd({ animated: true })}
+            />
+
+            <View style={{
+              position: 'absolute', bottom: 2, left: 0, right: 0, padding: 10, backgroundColor: '', flexDirection: 'row',
+            }}
+            >
               <TextInput
-                style={styles.modalInput}
-                placeholder="Enter new message"
-                value={updatedMessage}
-                onChangeText={(text) => this.setState({ updatedMessage: text })}
+                placeholder="Enter message"
+                value={newMessage}
+                onChangeText={(text) => this.setState({ newMessage: text })}
+                style={{
+                  borderWidth: 1, borderColor: '#000', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 10, flex: 1, marginRight: 3,
+                }}
               />
               <TouchableOpacity
-                style={styles.saveButton}
-                onPress={() => {
-                  this.handleUpdateMessage(chatId, editMessageId, updatedMessage);
-                  this.setState({ editMessageId: null });
+                onPress={this.handleNewMessage}
+                style={{
+                  backgroundColor: '#67c5f5', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10,
                 }}
               >
-                <Text style={styles.saveButtonText}>Save</Text>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Send</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => this.setState({ editMessageId: null })}
+                style={{
+                  backgroundColor: '#67c5f5', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10,
+                }}
+                onPress={this.handleSaveDraft}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Save</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+          <Modal
+            visible={editMessageId !== null}
+            animationType="slide"
+            transparent
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Update a message</Text>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="Enter new message"
+                  value={updatedMessage}
+                  onChangeText={(text) => this.setState({ updatedMessage: text })}
+                />
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={() => {
+                    this.handleUpdateMessage(chatId, editMessageId, updatedMessage);
+                    this.setState({ editMessageId: null });
+                  }}
+                >
+                  <Text style={styles.saveButtonText}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => this.setState({ editMessageId: null })}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
       </View>
     );
   }

@@ -6,6 +6,16 @@ export default StyleSheet.create({
     fontSize: 20,
     marginBottom: 5,
   },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#ffffff',
+  },
+  background: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    padding: 10,
+  },
   messageContainer: {
     flex: 1,
     maxHeight: 560,
@@ -86,7 +96,7 @@ export default StyleSheet.create({
   membersButtonContainer: {
     backgroundColor: '#ad1010',
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
     borderRadius: 5,
   },
   buttonContainer: {
@@ -107,11 +117,6 @@ export default StyleSheet.create({
   membersContainer: {
     flex: 1,
     paddingHorizontal: 10,
-  },
-  background: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    padding: 10,
   },
   modalContainer: {
     flex: 1,
@@ -139,6 +144,7 @@ export default StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    marginRight: 10,
   },
   saveButtonText: {
     color: '#fff',

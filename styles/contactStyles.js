@@ -6,11 +6,21 @@ export default StyleSheet.create({
     padding: 16,
     backgroundColor: '#ffffff',
   },
+  background: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    padding: 10,
+  },
   header: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 5,
+    textAlign: 'center',
+  },
+  header2: {
+    fontSize: 12,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   item: {
@@ -43,6 +53,10 @@ export default StyleSheet.create({
   },
   addButtonText: {
     color: 'white',
+    fontWeight: 'bold',
+  },
+  close: {
+    color: 'red',
     fontWeight: 'bold',
   },
 

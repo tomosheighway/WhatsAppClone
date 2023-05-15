@@ -5,6 +5,9 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import styles from '../styles/chatStyles';
+import {
+  ListItem, Input,
+} from 'react-native-elements';
 
 class Chats extends Component {
   static navigationOptions = {
@@ -113,49 +116,57 @@ class Chats extends Component {
     const { navigation } = this.props;
     const reversedChats = [...chats].reverse();
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Chats:</Text>
-        {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-        <TextInput
-          style={styles.input}
-          placeholder="Enter a new chat name"
-          value={this.newChatName}
-          onChangeText={(text) => this.setState({ newChatName: text })}
-        />
-        <TouchableOpacity style={styles.button} onPress={this.createNewChat}>
-          <Text style={styles.buttonText}>Create New Chat</Text>
-        </TouchableOpacity>
-        <FlatList
-          data={reversedChats}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.chatItem}
-              onPress={() => navigation.navigate('ViewChat', {
-                data: item.chat_id,
-                getChats: this.getChats.bind(this),
-              })}
-            >
-              <Text style={styles.chatId}>
-                ID:
-                {' '}
-                {item.chat_id}
-              </Text>
-              <Text style={styles.chatName}>
-                Name:
+      <View style={styles.background}>
+        <View style={styles.container}>
+
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+          <Input
+            placeholder="Enter a new chat name"
+            value={this.newChatName}
+            onChangeText={(text) => this.setState({ newChatName: text })}
+          />
+          <TouchableOpacity style={styles.button} onPress={this.createNewChat}>
+            <Text style={styles.buttonText}>Create New Chat</Text>
+          </TouchableOpacity>
+          <FlatList
+            data={reversedChats}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.chatItem}
+                onPress={() => navigation.navigate('ViewChat', {
+                  data: item.chat_id,
+                  getChats: this.getChats.bind(this),
+                })}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    Chat Name:
+                    {' '}
+                    {item.name}
+                  </ListItem.Title>
+                </ListItem.Content>
+                {/* <Text style={styles.chatName}>
+                Chat Name:
                 {' '}
                 {item.name}
-              </Text>
-              {item.last_message && item.last_message.message ? (
-                <Text style={styles.chatLastMessage}>
-                  Last Message:
-                  {' '}
-                  {item.last_message.message}
-                </Text>
-              ) : null}
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.chat_id.toString()}
-        />
+              </Text> */}
+                {item.last_message && item.last_message.message ? (
+                  <ListItem.Subtitle>
+                    Last Message:
+                    {' '}
+                    {item.last_message.message}
+                  </ListItem.Subtitle>
+                // <Text style={styles.chatLastMessage}>
+                //   Last Message:
+                //   {' '}
+                //   {item.last_message.message}
+                // </Text>
+                ) : null}
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.chat_id.toString()}
+          />
+        </View>
       </View>
     );
   }
@@ -168,6 +179,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#ffffff',
+  },
+  background: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    padding: 10,
   },
   title: {
     fontSize: 20,

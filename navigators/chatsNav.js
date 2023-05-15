@@ -13,9 +13,17 @@ export default function ChatsNav() {
   return (
     <Stack.Navigator initialRouteName="Chats">
       <Stack.Screen name="Chats" component={Chats} options={{ headerShown: false }} />
-      <Stack.Screen name="ViewChat" component={ViewChat} />
-      <Stack.Screen name="AddToChat" component={AddToChat} />
-      <Stack.Screen name="RemoveFromChat" component={RemoveFromChat} />
+      <Stack.Screen
+        name="ViewChat"
+        component={ViewChat}
+        options={{ title: 'Messages' }}
+      />
+      <Stack.Screen
+        name="AddToChat"
+        component={AddToChat}
+        options={{ title: 'Add a contact to the chat' }}
+      />
+      <Stack.Screen name="RemoveFromChat" component={RemoveFromChat} options={{ title: 'Remove a user from the chat' }} />
     </Stack.Navigator>
   );
 }
