@@ -131,6 +131,9 @@ export default StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
+  modalTitle: {
+    fontWeight: 'bold',
+  },
   saveButton: {
     backgroundColor: '#007AFF',
     borderRadius: 5,
@@ -158,5 +161,16 @@ export default StyleSheet.create({
     padding: 20,
     width: '80%',
     maxHeight: '80%',
+  },
+  draftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  messageText: {
+    marginRight: 50,
+  },
+  sendButton: {
+    textAlign: 'right',
   },
 });
