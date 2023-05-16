@@ -371,29 +371,33 @@ class Contacts extends Component {
           </TouchableOpacity>
 
           <Modal visible={modalVisible} animationType="slide">
-            <View style={{ flex: 1 }}>
-              <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
-                <Text style={styles.close}>Close</Text>
-              </TouchableOpacity>
-              <FlatList
-                data={users}
-                keyExtractor={(item) => item.user_id}
-                renderItem={({ item }) => (
-                  <ListItem bottomDivider>
-                    <ListItem.Content>
-                      <ListItem.Title>
-                        {item.given_name}
-                        {' '}
-                        {item.family_name}
-                      </ListItem.Title>
-                    </ListItem.Content>
-                    <TouchableOpacity onPress={() => this.addUserAsContact(item.user_id)}>
-                      <Text>Add as Contact</Text>
-                    </TouchableOpacity>
+            <View style={styles.background}>
+              <View style={styles.container}>
 
-                  </ListItem>
-                )}
-              />
+                <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
+                  <Text style={styles.close}>Close</Text>
+                </TouchableOpacity>
+                <Text style={styles.header}>List of all users</Text>
+                <FlatList
+                  data={users}
+                  keyExtractor={(item) => item.user_id}
+                  renderItem={({ item }) => (
+                    <ListItem bottomDivider>
+                      <ListItem.Content>
+                        <ListItem.Title>
+                          {item.given_name}
+                          {' '}
+                          {item.family_name}
+                        </ListItem.Title>
+                      </ListItem.Content>
+                      <TouchableOpacity onPress={() => this.addUserAsContact(item.user_id)}>
+                        <Text>Add as Contact</Text>
+                      </TouchableOpacity>
+
+                    </ListItem>
+                  )}
+                />
+              </View>
             </View>
           </Modal>
 

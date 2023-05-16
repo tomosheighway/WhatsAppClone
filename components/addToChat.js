@@ -110,28 +110,30 @@ class AddToChat extends Component {
   render() {
     const { errorMessage, contacts } = this.state;
     return (
-      <View>
+      <View style={styles.background}>
+        <View style={styles.container}>
 
-        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-        <FlatList
-          data={contacts}
-          keyExtractor={(contact) => contact.user_id.toString()}
-          renderItem={({ item: contact }) => (
-            <ListItem bottomDivider>
-              <ListItem.Content>
-                <ListItem.Title>
-                  {contact.first_name}
-                  {' '}
-                  {contact.last_name}
-                </ListItem.Title>
-                <ListItem.Subtitle>{contact.email}</ListItem.Subtitle>
-              </ListItem.Content>
-              <TouchableOpacity onPress={() => this.handleAddUserToChat(contact.user_id)}>
-                <Text>Add to Chat</Text>
-              </TouchableOpacity>
-            </ListItem>
-          )}
-        />
+          {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+          <FlatList
+            data={contacts}
+            keyExtractor={(contact) => contact.user_id.toString()}
+            renderItem={({ item: contact }) => (
+              <ListItem bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title>
+                    {contact.first_name}
+                    {' '}
+                    {contact.last_name}
+                  </ListItem.Title>
+                  <ListItem.Subtitle>{contact.email}</ListItem.Subtitle>
+                </ListItem.Content>
+                <TouchableOpacity onPress={() => this.handleAddUserToChat(contact.user_id)}>
+                  <Text>Add to Chat</Text>
+                </TouchableOpacity>
+              </ListItem>
+            )}
+          />
+        </View>
       </View>
     );
   }

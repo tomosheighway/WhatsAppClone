@@ -62,8 +62,31 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   close: {
-    color: 'red',
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 14,
+    borderColor: 'black',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    maxHeight: 500,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+  },
+  cancelButton: {
+    backgroundColor: '#EFEFF4',
+    borderRadius: 5,
+    padding: 10,
+  },
+  cancelButtonText: {
+    color: '#007AFF',
+    textAlign: 'center',
     fontWeight: 'bold',
   },
-
 });

@@ -79,8 +79,8 @@ class RemoveFromChat extends Component {
   render() {
     const { errorMessage, members } = this.state;
     return (
-      <View>
-        <View>
+      <View style={styles.background}>
+        <View style={styles.container}>
           {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
           <FlatList
             data={members}
