@@ -201,20 +201,67 @@ class ViewChats extends Component {
   };
 
   handleSaveDraft = async () => {
-    const { newMessage } = this.state;
+    const { newMessage, chatId } = this.state;
     if (newMessage.trim() === '') {
       this.setState({ errorMessage: 'Message cannot be blank' });
       return;
     }
     try {
       const savedMessages = await AsyncStorage.getItem('draftMessages');
+      let draftMessages = {};
+      if (savedMessages) {
+        draftMessages = JSON.parse(savedMessages);
+      }
+      if (!draftMessages[chatId]) {
+        draftMessages[chatId] = [];
+      }
+      draftMessages[chatId].push(newMessage);
+      await AsyncStorage.setItem('draftMessages', JSON.stringify(draftMessages));
+      this.setState({ errorMessage: 'Message saved to drafts', newMessage: '' });
+      this.retrieveDraftMessages();
+    } catch (error) {
+      this.setState({ errorMessage: 'Something went wrong' });
+    }
+  };
+
+  deleteDraftMessage = async (message) => {
+    try {
+      const { chatId } = this.state;
+      const savedMessages = await AsyncStorage.getItem('draftMessages');
+      let draftMessages = {};
+      if (savedMessages) {
+        draftMessages = JSON.parse(savedMessages);
+      }
+      if (draftMessages[chatId]) {
+        const messageIndex = draftMessages[chatId].indexOf(message);
+        if (messageIndex !== -1) {
+          draftMessages[chatId].splice(messageIndex, 1); // Remove the draft message
+          await AsyncStorage.setItem('draftMessages', JSON.stringify(draftMessages));
+          this.setState({ draftMessages: draftMessages[chatId] });
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting draft message:', error);
+    }
+  };
+
+  // extention task 2 unused code
+  // eslint-disable-next-line react/no-unused-class-component-methods
+  handleScheduleDraftMessage = async (message, scheduledTime) => {
+    this.setState({ isDraftModalVisable: false, newMessage: message });
+    const draftMessage = {
+      message,
+      scheduledTime,
+    };
+    try {
+      const savedMessages = await AsyncStorage.getItem('draftMessages');
       let draftMessages = [];
       if (savedMessages) {
         draftMessages = JSON.parse(savedMessages);
       }
-      draftMessages.push(newMessage);
+      draftMessages.push(draftMessage);
       await AsyncStorage.setItem('draftMessages', JSON.stringify(draftMessages));
-      this.setState({ errorMessage: 'Message saved to drafts', newMessage: '' });
+      this.setState({ errorMessage: 'Message scheduled', newMessage: '' });
       this.retrieveDraftMessages();
     } catch (error) {
       this.setState({ errorMessage: 'Something went wrong' });
@@ -226,7 +273,12 @@ class ViewChats extends Component {
       const savedMessages = await AsyncStorage.getItem('draftMessages');
       if (savedMessages) {
         const draftMessages = JSON.parse(savedMessages);
-        this.setState({ draftMessages });
+        const { chatId } = this.state;
+        if (draftMessages[chatId]) {
+          this.setState({ draftMessages: draftMessages[chatId] });
+        } else {
+          this.setState({ draftMessages: [] });
+        }
       } else {
         this.setState({ draftMessages: [] });
       }
@@ -239,6 +291,7 @@ class ViewChats extends Component {
     this.setState({ isDraftModalVisable: false, newMessage: message });
     await this.handleNewMessage();
     this.handleNewMessageAdded();
+    this.deleteDraftMessage(message);
   };
 
   async viewChat() {
@@ -384,15 +437,22 @@ class ViewChats extends Component {
                 <Text style={styles.modalTitle}>Draft Messages</Text>
                 {draftMessages.map((message) => (
                   <View key={message.id} style={styles.draftContainer}>
-                    <Text style={styles.messageText}>{message}</Text>
+                    <View style={styles.draftMsgContainer}>
+                      <Text style={styles.messageText}>{message}</Text>
+                    </View>
                     <TouchableOpacity
                       style={styles.sendButton}
                       onPress={() => this.handleSendDraftMessage(message)}
                     >
                       <Text style={styles.sendButtonText}>Send</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => this.deleteDraftMessage(message)}
+                    >
+                      <Text style={styles.sendButtonText}>Delete</Text>
+                    </TouchableOpacity>
                   </View>
-
                 ))}
                 <TouchableOpacity
                   style={styles.cancelButton}

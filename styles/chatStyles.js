@@ -181,9 +181,12 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   messageText: {
-    marginRight: 50,
+    marginRight: 10,
   },
   sendButton: {
+    textAlign: 'right',
+  },
+  deleteButton: {
     textAlign: 'right',
   },
   input: {
