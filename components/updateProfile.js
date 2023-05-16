@@ -5,6 +5,7 @@ import {
 import emailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Input } from 'react-native-elements';
+import styles from '../styles/profileStyles';
 
 class UpdateProfile extends Component {
   static navigationOptions = {
@@ -53,8 +54,6 @@ class UpdateProfile extends Component {
       return;
     }
 
-    this.setState({ errorMessage: 'Valid new password enterted and updated' });
-
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
     const requestBody = { password };
@@ -68,7 +67,7 @@ class UpdateProfile extends Component {
       body: JSON.stringify(requestBody),
     });
     if (response.status === 200) {
-      console.log('Password updated successfully');
+      this.setState({ errorMessage: 'Password updated successfully' });
     } else if (response.status === 401) {
       console.log('Unauthorized error');
       const { navigation } = this.props;
@@ -88,10 +87,12 @@ class UpdateProfile extends Component {
     const {
       originalData, firstName, lastName, email,
     } = this.state;
+    // eslint-disable-next-line react/destructuring-assignment
     const { params: { updateUserDetails } } = this.props.route;
     if (firstName === originalData.first_name
         && lastName === originalData.last_name
         && email === originalData.email) {
+      this.setState({ errorMessage: 'No changes were made' });
       console.log('No changes made as details are the same');
       return;
     }
@@ -127,7 +128,7 @@ class UpdateProfile extends Component {
     });
 
     if (response.status === 200) {
-      console.log('User data updated successfully');
+      this.setState({ errorMessage: 'User data updated successfully' });
       updateUserDetails();
     } else if (response.status === 401) {
       console.log('Unauthorized error');
@@ -154,44 +155,46 @@ class UpdateProfile extends Component {
     } = this.state;
 
     return (
-      <View>
-        {errorMessage ? <Text>{errorMessage}</Text> : null}
+      <View style={styles.background}>
+        <View style={styles.container}>
+          {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
 
-        <Input
-          label="First Name"
-          value={firstName}
-          onChangeText={(val) => this.setState({ firstName: val })}
-        />
+          <Input
+            label="First Name"
+            value={firstName}
+            onChangeText={(val) => this.setState({ firstName: val })}
+          />
 
-        <Input
-          label="Last Name"
-          value={lastName}
-          onChangeText={(val) => this.setState({ lastName: val })}
-        />
+          <Input
+            label="Last Name"
+            value={lastName}
+            onChangeText={(val) => this.setState({ lastName: val })}
+          />
 
-        <Input
-          label="Email"
-          value={email}
-          onChangeText={(val) => this.setState({ email: val })}
-        />
+          <Input
+            label="Email"
+            value={email}
+            onChangeText={(val) => this.setState({ email: val })}
+          />
 
-        <Button
-          title="Update Profile"
-          onPress={this.updateProfile}
-        />
+          <Button
+            title="Update Profile"
+            onPress={this.updateProfile}
+          />
 
-        <Input
-          label="New Password"
-          placeholder="Enter new password"
-          value={password}
-          onChangeText={this.handlePasswordInput}
-          secureTextEntry
-        />
+          <Input
+            label="New Password"
+            placeholder="Enter new password"
+            value={password}
+            onChangeText={this.handlePasswordInput}
+            secureTextEntry
+          />
 
-        <Button
-          title="Update Password"
-          onPress={this.handleNewPassword}
-        />
+          <Button
+            title="Update Password"
+            onPress={this.handleNewPassword}
+          />
+        </View>
       </View>
     );
   }

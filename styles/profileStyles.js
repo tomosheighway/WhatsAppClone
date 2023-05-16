@@ -42,7 +42,9 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   errorMessage: {
-    color: '#FF3B30',
-    marginTop: 10,
+    backgroundColor: 'lightblue',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
 });
