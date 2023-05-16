@@ -32,12 +32,12 @@ class Profile extends Component {
         const sessionToken = await AsyncStorage.getItem('sessionToken');
         const userId = await AsyncStorage.getItem('userId');
         const photo = await this.getPhoto(userId, sessionToken);
-        this.setState({ userInfo, photo, loading: false }); // set loading state to false
+        this.setState({ userInfo, photo, loading: false });
       } else {
-        this.setState({ errorMessage: 'Something went wrong', loading: false }); // set loading state to false
+        this.setState({ errorMessage: 'Something went wrong', loading: false });
       }
     } catch (error) {
-      this.setState({ errorMessage: error.message, loading: false }); // set loading state to false
+      this.setState({ errorMessage: error.message, loading: false });
     }
   }
 
@@ -45,7 +45,6 @@ class Profile extends Component {
     this.unsubscribe();
   }
 
-  // getting user details ------
   async getUserInfo() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
@@ -97,10 +96,6 @@ class Profile extends Component {
       });
       if (response.status === 200) {
         const blob = await response.blob();
-        // let data = URL.createObjectURL(blob);
-        // this.setState({
-        //   photo: data,
-        // })
         return window.URL.createObjectURL(blob);
       }
       if (response.status === 401) {
@@ -127,7 +122,6 @@ class Profile extends Component {
     }
   };
 
-  // using to refresh the page data when returning from the profile page
   updateUserDetails = async () => {
     const userInfo = await this.getUserInfo();
     if (userInfo) {

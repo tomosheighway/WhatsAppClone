@@ -36,8 +36,6 @@ class AddToChat extends Component {
 
   async getContacts() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-    // const userId = await AsyncStorage.getItem('userId');
-
     return fetch('http://localhost:3333/api/1.0.0/contacts', {
       method: 'GET',
       headers: {
@@ -87,7 +85,6 @@ class AddToChat extends Component {
         console.log('User added to the chat ');
         this.setState({ errorMessage: 'User added' });
         viewChat();
-        // await this.viewChat();
       } else if (response.status === 400) {
         console.log('Bad Request');
         this.setState({ errorMessage: 'User already a member of the chat' });

@@ -18,7 +18,7 @@ class Signup extends Component {
       lastName: '',
       email: '',
       password: '',
-      errorMessage: '', // error state 4 outputting error message on login
+      errorMessage: '',
     };
   }
 
@@ -43,7 +43,6 @@ class Signup extends Component {
       email, password, firstName, lastName,
     } = this.state;
     const { navigation } = this.props;
-    // Validation sign up logic ## could add validation to prevent numbers in the name inputs
     if (!email || !password) {
       this.setState({ errorMessage: 'Please fill in all of the fields' });
       return;
@@ -56,11 +55,6 @@ class Signup extends Component {
       this.setState({ errorMessage: "Please enter a strong password. \n(8 or more characters including at least one uppercase letter, one number, and one special character: !@#$%^&*()_+-=[]{};:'\"\\|,.<>/?)" });
       return;
     }
-
-    // output msg
-    // this.setState({errorMessage: "Sign Up successful!"});     //success message for testing.
-
-    // is it 2.0.0 or not. currently getiing a 404 version.
     fetch('http://localhost:3333/api/1.0.0/user', {
       method: 'post',
       headers: {
@@ -77,12 +71,11 @@ class Signup extends Component {
         if (response.status === 201) {
           console.log('user created ID: ', response.json());
           navigation.navigate('Login');
-        // this.setState({errorMessage: "Sign Up successful!"});
         }
         if (response.status === 400) {
           this.setState({ errorMessage: 'Email already exisits' });
           console.log('email already exisits');
-          // navigation.navigate('Signup');
+
           throw new Error('Email already exisits');
         } else {
           console.log('email already exisits');
@@ -95,7 +88,6 @@ class Signup extends Component {
       });
   };
 
-  // Password strength check
   // eslint-disable-next-line class-methods-use-this
   isStrongPassword = (password) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/; // (including: one uppercase, one number and one special

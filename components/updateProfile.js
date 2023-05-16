@@ -33,7 +33,6 @@ class UpdateProfile extends Component {
       firstName: data.first_name,
       lastName: data.last_name,
       email: data.email,
-
     });
   }
 
@@ -53,7 +52,6 @@ class UpdateProfile extends Component {
       this.setState({ errorMessage: "Please enter a strong password. \n(8 or more characters including at least one uppercase letter, one number, and one special character: !@#$%^&*()_+-=[]{};:'\"\\|,.<>/?)" });
       return;
     }
-
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
     const requestBody = { password };
@@ -96,19 +94,15 @@ class UpdateProfile extends Component {
       console.log('No changes made as details are the same');
       return;
     }
-
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const userId = await AsyncStorage.getItem('userId');
     const requestBody = {};
-
     if (firstName !== originalData.first_name) {
       requestBody.first_name = firstName;
     }
-
     if (lastName !== originalData.last_name) {
       requestBody.last_name = lastName;
     }
-
     if (email !== originalData.email) {
       if (!emailValidator.validate(email)) {
         this.setState({ errorMessage: 'Invalid email enterted' });
@@ -116,7 +110,6 @@ class UpdateProfile extends Component {
       }
       requestBody.email = email;
     }
-
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
       method: 'PATCH',
       headers: {
@@ -164,24 +157,20 @@ class UpdateProfile extends Component {
             value={firstName}
             onChangeText={(val) => this.setState({ firstName: val })}
           />
-
           <Input
             label="Last Name"
             value={lastName}
             onChangeText={(val) => this.setState({ lastName: val })}
           />
-
           <Input
             label="Email"
             value={email}
             onChangeText={(val) => this.setState({ email: val })}
           />
-
           <Button
             title="Update Profile"
             onPress={this.updateProfile}
           />
-
           <Input
             label="New Password"
             placeholder="Enter new password"
@@ -189,7 +178,6 @@ class UpdateProfile extends Component {
             onChangeText={this.handlePasswordInput}
             secureTextEntry
           />
-
           <Button
             title="Update Password"
             onPress={this.handleNewPassword}

@@ -97,7 +97,6 @@ class Contacts extends Component {
 
   async getUsersId(email) {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-
     return fetch(`http://localhost:3333/api/1.0.0/search?q=${email}&search_in=all`, {
       method: 'GET',
       headers: {
@@ -135,8 +134,6 @@ class Contacts extends Component {
 
   async getContacts() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-    // const userId = await AsyncStorage.getItem('userId');
-
     return fetch('http://localhost:3333/api/1.0.0/contacts', {
       method: 'GET',
       headers: {
@@ -170,8 +167,6 @@ class Contacts extends Component {
 
   async getBlockedContacts() {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
-    // const userId = await AsyncStorage.getItem('userId');
-
     return fetch('http://localhost:3333/api/1.0.0/blocked', {
       method: 'GET',
       headers: {
@@ -408,10 +403,6 @@ class Contacts extends Component {
             renderItem={({ item }) => (
               <ListItem bottomDivider>
                 <ListItem.Content>
-                  {/* <ListItem.Title>
-                  {'UserID: '}
-                  {item.user_id}
-                </ListItem.Title> */}
                   <ListItem.Title>
                     {'Name: '}
                     {item.first_name}

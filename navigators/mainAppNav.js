@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Home from '../components/home';
 import ProfileNav from './profileNav';
 import ChatsNav from './chatsNav';
 import ContactsNav from './contactsNav';
@@ -14,7 +13,6 @@ class MainAppNav extends Component {
     const { navigation } = this.props;
     this.unsubscribe = navigation.addListener('focus', () => {
       this.checkLoggedIn();
-      console.log('testing'); // not getting triggered at this point
     });
   }
 
@@ -26,7 +24,6 @@ class MainAppNav extends Component {
     const { navigation } = this.props;
     const value = await AsyncStorage.getItem('sessionToken');
     if (value == null) {
-      // console.log('Detected user missing login details');
       navigation.navigate('Login');
     }
   };

@@ -469,17 +469,7 @@ class ViewChats extends Component {
             {members.length}
             )
           </Text>
-          {/* <FlatList
-          style={styles.scroll}
-          data={members}
-          renderItem={({ item }) => (
-            <Text key={item.user_id} style={styles.member}>
-              {item.first_name}
-              {' '}
-              {item.last_name}
-            </Text>
-          )}
-        /> */}
+
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
               style={styles.leftButtonContainer2}

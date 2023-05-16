@@ -5,13 +5,8 @@ import {
 import * as EmailValidator from 'email-validator'; // Importing the email-validator library
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Input } from 'react-native-elements';
-
-import { showMessage } from 'react-native-flash-message'; // Import the showMessage function
-import FlashMessage from 'react-native-flash-message';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 import styles from '../styles/accountStyles';
-
-// import 'react-native-flash-message/styles/default'; // Import the default styles
-// import Icon from 'react-native-vector-icons/MaterialIcons';   // icon pack
 
 class Login extends Component {
   static navigationOptions = {
@@ -86,7 +81,6 @@ class Login extends Component {
       .then((response) => {
         if (response.status === 200) {
           return response.json();
-        // this.setState({errorMessage: "Sign Up successful!"});
         }
         if (response.status === 400) {
           throw new Error('Invalid user details');
@@ -118,7 +112,6 @@ class Login extends Component {
       .catch((ERR) => {
         this.setState({ errorMessage: ERR.message });
       });
-    // this.setState({errorMessage: "Login successful!"});
   };
 
   render() {
@@ -147,19 +140,16 @@ class Login extends Component {
           containerStyle={styles.textInputContainer}
           inputStyle={styles.textInput}
         />
-
         <Button
           title="Login"
           buttonStyle={styles.buttonContainer}
           onPress={this.handleLogin}
         />
-
         <Button
           title="Create a account"
           buttonStyle={styles.buttonContainer}
           onPress={() => navigation.navigate('Signup')}
         />
-
         {errorMessage ? <Text>{errorMessage}</Text> : null}
         <FlashMessage position="top" />
       </View>

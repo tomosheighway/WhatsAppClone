@@ -24,12 +24,6 @@ class Chats extends Component {
     };
   }
 
-  // async componentDidMount() {
-  //   const chats = await this.getChats();
-  //   if (chats) {
-  //     this.setState({ chats });
-  //   }
-  // }
   async componentDidMount() {
     await this.getChats();
     this.intervalId = setInterval(this.getChats.bind(this), 5000);
@@ -112,7 +106,6 @@ class Chats extends Component {
       });
   };
 
-  // test render just to return output
   render() {
     const { chats, errorMessage } = this.state;
     const { navigation } = this.props;
@@ -147,22 +140,12 @@ class Chats extends Component {
                     {item.name}
                   </ListItem.Title>
                 </ListItem.Content>
-                {/* <Text style={styles.chatName}>
-                Chat Name:
-                {' '}
-                {item.name}
-              </Text> */}
                 {item.last_message && item.last_message.message ? (
                   <ListItem.Subtitle>
                     Last Message:
                     {' '}
                     {item.last_message.message}
                   </ListItem.Subtitle>
-                // <Text style={styles.chatLastMessage}>
-                //   Last Message:
-                //   {' '}
-                //   {item.last_message.message}
-                // </Text>
                 ) : null}
               </TouchableOpacity>
             )}
@@ -175,58 +158,3 @@ class Chats extends Component {
 }
 
 export default Chats;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 16,
-//     backgroundColor: '#ffffff',
-//   },
-//   background: {
-//     flex: 1,
-//     backgroundColor: 'lightblue',
-//     padding: 10,
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//     marginBottom: 8,
-//   },
-//   error: {
-//     color: 'red',
-//     marginBottom: 8,
-//   },
-//   input: {
-//     height: 40,
-//     borderColor: 'gray',
-//     borderWidth: 1,
-//     marginBottom: 8,
-//     paddingHorizontal: 8,
-//   },
-//   createButton: {
-//     backgroundColor: '#007bff',
-//     paddingVertical: 10,
-//     paddingHorizontal: 16,
-//     borderRadius: 4,
-//     marginBottom: 16,
-//   },
-//   createButtonText: {
-//     color: '#ffffff',
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//   },
-//   chatItem: {
-//     paddingVertical: 8,
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#cccccc',
-//   },
-//   chatId: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-//   chatName: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-// });

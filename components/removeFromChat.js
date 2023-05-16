@@ -30,11 +30,6 @@ class RemoveFromChat extends Component {
     });
   }
 
-  // #TODO
-  // they are able to remove their own user from the chat - should they be able to?
-  // this causes issue as once they are removed they are then unable to remove others
-  // add in a redirect to avoid this
-
   handleRemoveUserFromChat = async (userId) => {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
@@ -56,7 +51,6 @@ class RemoveFromChat extends Component {
           members: members.filter((member) => member.user_id !== userId),
         });
         viewChat();
-        // await this.viewChat();
       } else if (response.status === 400) {
         console.log('Bad Request');
         this.setState({ errorMessage: 'User already a member of the chat' });
