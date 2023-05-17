@@ -6,7 +6,7 @@ import {
 import React, { useState, useEffect } from 'react';
 
 import {
-  Text, TouchableOpacity, View, StyleSheet, Modal, Image,
+  Text, TouchableOpacity, View, Modal, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/cameraStyles';
