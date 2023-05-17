@@ -438,15 +438,11 @@ class Contacts extends Component {
               <ListItem bottomDivider>
                 <ListItem.Content>
                   <ListItem.Title>
-                    {'UserID: '}
-                    {item.user_id}
-                  </ListItem.Title>
-                  <ListItem.Subtitle>
                     {'Name: '}
                     {item.first_name}
                     {' '}
                     {item.last_name}
-                  </ListItem.Subtitle>
+                  </ListItem.Title>
                   <ListItem.Subtitle>
                     {'Email: '}
                     {item.email}
