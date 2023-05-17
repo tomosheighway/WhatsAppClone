@@ -6,7 +6,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-  ListItem, Input,
+  ListItem, Input, Button,
 } from 'react-native-elements';
 import styles from '../styles/chatStyles';
 
@@ -120,9 +120,9 @@ class Chats extends Component {
             value={this.newChatName}
             onChangeText={(text) => this.setState({ newChatName: text })}
           />
-          <TouchableOpacity style={styles.createButton} onPress={this.createNewChat}>
-            <Text style={styles.createButtonText}>Create New Chat</Text>
-          </TouchableOpacity>
+
+          <Button title="Create New Chat" onPress={this.createNewChat} />
+
           <FlatList
             data={reversedChats}
             renderItem={({ item }) => (
