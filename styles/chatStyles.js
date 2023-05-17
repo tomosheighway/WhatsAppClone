@@ -179,6 +179,18 @@ export default StyleSheet.create({
     borderRadius: 5,
     marginLeft: 10,
   },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   cancelButton: {
     backgroundColor: '#bdbdbd',
     paddingVertical: 10,

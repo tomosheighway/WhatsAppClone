@@ -151,7 +151,6 @@ class UpdateProfile extends Component {
       <View style={styles.background}>
         <View style={styles.container}>
           {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-
           <Input
             label="First Name"
             value={firstName}
@@ -168,7 +167,7 @@ class UpdateProfile extends Component {
             onChangeText={(val) => this.setState({ email: val })}
           />
           <Button
-            title="Update Profile"
+            title="Update Profile Details"
             onPress={this.updateProfile}
           />
           <Input

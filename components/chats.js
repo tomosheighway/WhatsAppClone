@@ -62,7 +62,7 @@ class Chats extends Component {
   createNewChat = async () => {
     const sessionToken = await AsyncStorage.getItem('sessionToken');
     const { newChatName } = this.state;
-    console.log(newChatName);
+    // console.log(newChatName);
     if (!newChatName || newChatName.trim() === '') {
       this.setState({ errorMessage: 'Chat name cannot be blank' });
       return;

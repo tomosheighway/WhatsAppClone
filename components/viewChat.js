@@ -135,7 +135,7 @@ class ViewChats extends Component {
     try {
       const sessionToken = await AsyncStorage.getItem('sessionToken');
       const { chatId, newMessage } = this.state;
-      console.log(newMessage);
+      // console.log(newMessage);
       if (!newMessage || !newMessage.trim()) {
         this.setState({ errorMessage: 'Please enter a message' });
         return;
@@ -325,7 +325,7 @@ class ViewChats extends Component {
       .then(async (response) => {
         if (response.status === 200) {
           const data = await response.json();
-          console.log(data);
+          // console.log(data);
           this.setState({
             chatName: data.name,
             members: data.members,
