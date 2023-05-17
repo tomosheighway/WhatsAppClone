@@ -5,7 +5,7 @@ import {
   View, Text, TouchableOpacity, FlatList, Modal,
 } from 'react-native';
 import {
-  Icon, Input, ListItem,
+  Icon, Input, ListItem, Button,
 } from 'react-native-elements';
 import styles from '../styles/contactStyles';
 
@@ -23,6 +23,7 @@ class Contacts extends Component {
       errorMessage: '',
       users: null,
       modalVisible: false,
+      query: '',
     };
   }
 
@@ -340,10 +341,49 @@ class Contacts extends Component {
       });
   }
 
+  async searchUsers() {
+    const { query } = this.state;
+    const sessionToken = await AsyncStorage.getItem('sessionToken');
+
+    const url = `http://localhost:3333/api/1.0.0/search?q=${query}&search_in=all&limit=20&offset=0`;
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-Authorization': sessionToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log(data);
+          this.setState({ users: data }); // Set the search results in the state
+          return data;
+        }
+        if (response.status === 401) {
+          const { navigation } = this.props;
+          console.log('Unauthorized error');
+          navigation.navigate('Login');
+          return null;
+        }
+        if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  }
+
   render() {
     const {
       contacts, blockedContacts, errorMessage,
-      users, modalVisible,
+      users, modalVisible, query,
     } = this.state;
     return (
       <View style={styles.background}>
@@ -364,15 +404,22 @@ class Contacts extends Component {
           <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
             <Text style={styles.header2}>Or click to explore existing users</Text>
           </TouchableOpacity>
-
           <Modal visible={modalVisible} animationType="slide">
             <View style={styles.background}>
               <View style={styles.container}>
-
                 <TouchableOpacity onPress={() => this.setState({ modalVisible: false })}>
                   <Text style={styles.close}>Close</Text>
                 </TouchableOpacity>
                 <Text style={styles.header}>List of all users</Text>
+
+                <Input
+                  style={styles.input}
+                  value={query}
+                  onChangeText={(text) => this.setState({ query: text })}
+                  placeholder="Enter something to search..."
+                />
+                <Button title="Search" onPress={() => this.searchUsers()} />
+
                 <FlatList
                   data={users}
                   keyExtractor={(item) => item.user_id}
@@ -388,7 +435,6 @@ class Contacts extends Component {
                       <TouchableOpacity onPress={() => this.addUserAsContact(item.user_id)}>
                         <Text>Add as Contact</Text>
                       </TouchableOpacity>
-
                     </ListItem>
                   )}
                 />
@@ -431,38 +477,40 @@ class Contacts extends Component {
           />
 
           <Text style={styles.header}>Blocked contacts</Text>
-          <FlatList
-            data={blockedContacts}
-            keyExtractor={(item) => item.user_id}
-            renderItem={({ item }) => (
-              <ListItem bottomDivider>
-                <ListItem.Content>
-                  <ListItem.Title>
-                    {'Name: '}
-                    {item.first_name}
-                    {' '}
-                    {item.last_name}
-                  </ListItem.Title>
-                  <ListItem.Subtitle>
-                    {'Email: '}
-                    {item.email}
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-                <Icon
-                  name="lock-open"
-                  type="material-community"
-                  color="#00FF00"
-                  onPress={() => this.unblockContact(item.user_id)}
-                />
-                <Icon
-                  name="close"
-                  type="material-community"
-                  color="#ff0000"
-                  onPress={() => this.deleteContact(item.user_id)}
-                />
-              </ListItem>
-            )}
-          />
+          <View style={styles.blocked}>
+            <FlatList
+              data={blockedContacts}
+              keyExtractor={(item) => item.user_id}
+              renderItem={({ item }) => (
+                <ListItem bottomDivider>
+                  <ListItem.Content>
+                    <ListItem.Title>
+                      {'Name: '}
+                      {item.first_name}
+                      {' '}
+                      {item.last_name}
+                    </ListItem.Title>
+                    <ListItem.Subtitle>
+                      {'Email: '}
+                      {item.email}
+                    </ListItem.Subtitle>
+                  </ListItem.Content>
+                  <Icon
+                    name="lock-open"
+                    type="material-community"
+                    color="#00FF00"
+                    onPress={() => this.unblockContact(item.user_id)}
+                  />
+                  <Icon
+                    name="close"
+                    type="material-community"
+                    color="#ff0000"
+                    onPress={() => this.deleteContact(item.user_id)}
+                  />
+                </ListItem>
+              )}
+            />
+          </View>
         </View>
       </View>
     );
