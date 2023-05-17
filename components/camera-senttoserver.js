@@ -6,35 +6,17 @@ import {
 import React, { useState, useEffect } from 'react';
 
 import {
-  Text, TouchableOpacity, View, StyleSheet,
+  Text, TouchableOpacity, View, StyleSheet, Modal, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  buttonContainer: {
-    alignSelf: 'flex-end',
-    padding: 5,
-    margin: 5,
-    backgroundColor: 'steelblue',
-  },
-  button: {
-    width: '100%',
-    height: '100%',
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#ddd',
-  },
-});
+import styles from '../styles/cameraStyles';
 
 export default function CameraSendToServer({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = useState(null); // Camera.useCameraPermissions();
   const [camera, setCamera] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [photoData, setPhotoData] = useState(null);
 
   useEffect(() => {
     const getPer = async () => {
@@ -46,6 +28,11 @@ export default function CameraSendToServer({ navigation }) {
     // const per = Camera.useCameraPermissions();
     // requestPermission(per);
   }, []);
+
+  async function sendPhotoToServer(data) {
+    setPhotoData(data);
+    setShowModal(true);
+  }
 
   async function sendToServer(data) {
     // network request here
@@ -76,6 +63,12 @@ export default function CameraSendToServer({ navigation }) {
     }
   }
 
+  function handleConfirmation(confirm) {
+    setShowModal(false);
+    if (confirm) {
+      sendToServer(photoData);
+    }
+  }
   function toggleCameraType() {
     setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
     console.log('Camera: ', type);
@@ -83,10 +76,15 @@ export default function CameraSendToServer({ navigation }) {
 
   async function takePhoto() {
     if (camera) {
-      const options = { quality: 0.5, base64: true, onPictureSaved: (data) => sendToServer(data) };
+      const options = {
+        quality: 0.5,
+        base64: true,
+        onPictureSaved: (data) => sendPhotoToServer(data),
+      };
       const data = await camera.takePictureAsync(options);
     }
   }
+
   console.log(permission);
   if (!permission || !permission.granted) {
     return (<Text>No access to camera</Text>);
@@ -106,6 +104,28 @@ export default function CameraSendToServer({ navigation }) {
             <Text style={styles.text}>Take Photo</Text>
           </TouchableOpacity>
         </View>
+        <Modal
+          visible={showModal}
+          transparent
+          animationType="fade"
+        >
+          <View style={styles.modalContainer}>
+            <Image source={{ uri: photoData && photoData.uri }} style={styles.modalImage} />
+
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity style={styles.modalButton} onPress={() => handleConfirmation(true)}>
+                <Text style={styles.modalButtonText}>Confirm</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => handleConfirmation(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </Camera>
     </View>
   );
