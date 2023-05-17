@@ -86,7 +86,7 @@ class Chats extends Component {
           console.log(data);
           const chats = await this.getChats();
           if (chats) {
-            this.setState({ chats });
+            this.setState({ chats, newChatName: '' });
           }
         } else if (response.status === 401) {
           const { navigation } = this.props;

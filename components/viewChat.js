@@ -215,7 +215,13 @@ class ViewChats extends Component {
       if (!draftMessages[chatId]) {
         draftMessages[chatId] = [];
       }
-      draftMessages[chatId].push(newMessage);
+      const messageIndex = draftMessages[chatId].indexOf(newMessage);
+      if (messageIndex !== -1) {
+        draftMessages[chatId][messageIndex] = newMessage;
+      } else {
+        draftMessages[chatId].push(newMessage);
+      }
+
       await AsyncStorage.setItem('draftMessages', JSON.stringify(draftMessages));
       this.setState({ errorMessage: 'Message saved to drafts', newMessage: '' });
       this.retrieveDraftMessages();
@@ -243,6 +249,14 @@ class ViewChats extends Component {
     } catch (error) {
       console.error('Error deleting draft message:', error);
     }
+  };
+
+  editDraftMessage = (message) => {
+    this.setState({
+      isDraftModalVisable: false,
+      errorMessage: 'Edit you message in the input box',
+      newMessage: message,
+    });
   };
 
   // extention task 2 unused code
@@ -440,18 +454,27 @@ class ViewChats extends Component {
                     <View style={styles.draftMsgContainer}>
                       <Text style={styles.messageText}>{message}</Text>
                     </View>
-                    <TouchableOpacity
-                      style={styles.sendButton}
-                      onPress={() => this.handleSendDraftMessage(message)}
-                    >
-                      <Text style={styles.sendButtonText}>Send</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.deleteButton}
-                      onPress={() => this.deleteDraftMessage(message)}
-                    >
-                      <Text style={styles.sendButtonText}>Delete</Text>
-                    </TouchableOpacity>
+                    <View style={styles.draftButtonContainer}>
+
+                      <TouchableOpacity
+                        style={styles.editButton}
+                        onPress={() => this.handleSendDraftMessage(message)}
+                      >
+                        <Text style={styles.sendButtonText}>Send</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.editButton}
+                        onPress={() => this.editDraftMessage(message)}
+                      >
+                        <Text style={styles.editButtonText}>Edit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.editButton}
+                        onPress={() => this.deleteDraftMessage(message)}
+                      >
+                        <Text style={styles.sendButtonText}>Delete</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 ))}
                 <TouchableOpacity
@@ -460,6 +483,7 @@ class ViewChats extends Component {
                 >
                   <Text style={styles.cancelButtonText}>Close</Text>
                 </TouchableOpacity>
+
               </View>
             </View>
           </Modal>

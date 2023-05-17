@@ -146,22 +146,45 @@ export default StyleSheet.create({
   modalTitle: {
     fontWeight: 'bold',
   },
-  saveButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    marginRight: 10,
+  draftButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  saveButtonText: {
+  sendButton: {
+    backgroundColor: '#66bb6a',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  sendButtonText: {
     color: '#fff',
-    textAlign: 'center',
     fontWeight: 'bold',
   },
-  cancelButton: {
-    backgroundColor: '#EFEFF4',
+  editButton: {
+    backgroundColor: '#42a5f5',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     borderRadius: 5,
-    padding: 10,
+    marginLeft: 10,
+  },
+  editButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: '#ef5350',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#bdbdbd',
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
   },
   cancelButtonText: {
     color: '#007AFF',
@@ -183,12 +206,7 @@ export default StyleSheet.create({
   messageText: {
     marginRight: 10,
   },
-  sendButton: {
-    textAlign: 'right',
-  },
-  deleteButton: {
-    textAlign: 'right',
-  },
+
   input: {
     height: 40,
     borderColor: 'gray',
